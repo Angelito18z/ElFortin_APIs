@@ -1,5 +1,5 @@
 import express from "express"; // Importa el framework Express
-import proveedorRutas from "../APIs/rutas/proveedores/proveedorRuta.js"; // Importa las rutas de productos
+import proveedorRutas from './rutas/proveedores/proveedorRuta.js'; // Importa las rutas de productos
 import orderRoutes from './rutas/pedidos/pedidosRoutes.js';
 import restauranteRutas from './rutas/restaurantes/restauranteRutas.js';
 import promocionRutas from './rutas/promociones/promocionRuta.js';
