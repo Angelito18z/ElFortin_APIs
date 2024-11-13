@@ -4,8 +4,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "mocha",
-    "start": "node index.js"  
+    "test": "mocha --reporter mochawesome",
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +20,7 @@
   "devDependencies": {
     "chai": "^5.1.2",
     "mocha": "^10.7.3",
+    "mochawesome": "^7.1.3",
     "supertest": "^7.0.0"
   }
 }
