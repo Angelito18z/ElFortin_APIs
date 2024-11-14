@@ -23,7 +23,7 @@ app.use("/api", productoRutas);
 app.use("/api", usuarioRutas);
 
 // Inicia el servidor y escucha en el puerto definido
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 const server = app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`); // Muestra un mensaje en la consola indicando que el servidor está corriendo
