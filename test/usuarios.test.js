@@ -3,7 +3,7 @@ import usuariosModel from '../modelos/usuarios/usuariosModel.js';
 import request from 'supertest'; // Importar supertest (libreria para hacer solicitudes HHTP)
 import { app, server } from '../index.js';
 
-describe('Pruebas de la API ventas', () => {
+describe('Pruebas de la API usuarios', () => {
     let  getAll, getId;
     
     // Ejecutar antes de cada prueba 'it'

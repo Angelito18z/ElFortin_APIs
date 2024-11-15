@@ -3,7 +3,7 @@ import pedidosModelo from '../modelos/pedidos/pedidosModelo.js';
 import request from 'supertest'; // Importar supertest (libreria para hacer solicitudes HHTP)
 import { app, server } from '../index.js';
 
-describe('Pruebas de la API ventas', () => {
+describe('Pruebas de la API Pedidos', () => {
     let  getAll, getId;
     
     // Ejecutar antes de cada prueba 'it'
