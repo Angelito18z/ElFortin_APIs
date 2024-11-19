@@ -9,7 +9,7 @@ describe('Pruebas de la API usuarios', () => {
     // Ejecutar antes de cada prueba 'it'
     before(async () => {
          getAll = await usuariosModel.obtenerTodo();
-        getId = await usuariosModel.obtenerVentaId(1);
+        getId = await usuariosModel.findById(1);
     });
 
       // Ejecutar después de todas las pruebas 

@@ -30,7 +30,10 @@ create table discounts (
   value numeric(5, 2) not null,
   start_date date,
   end_date date,
-  active boolean default true
+  active boolean default true,
+  created_at timestamp with time zone default now(),
+  updated_at timestamp with time zone default now(),
+  deleted_at timestamp with time zone
 );
 
 create table restaurants (

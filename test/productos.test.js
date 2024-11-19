@@ -8,8 +8,8 @@ describe('Pruebas de la API productos', () => {
     
     // Ejecutar antes de cada prueba 'it'
     before(async () => {
-         getAll = await productModel.obtenerTodo();
-        getId = await productModel.obtenerVentaId(1);
+         getAll = await productModel.findAll();
+        getId = await productModel.findById(1);
     });
 
       // Ejecutar después de todas las pruebas 

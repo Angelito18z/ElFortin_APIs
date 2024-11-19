@@ -9,7 +9,7 @@ describe('Pruebas de la API proveedores', () => {
     // Ejecutar antes de cada prueba 'it'
     before(async () => {
          getAll = await proveedoresModelo.obtenerTodo();
-        getId = await proveedoresModelo.obtenerVentaId(1);
+        getId = await proveedoresModelo.obtenerProveedorId(1);
     });
 
       // Ejecutar después de todas las pruebas 

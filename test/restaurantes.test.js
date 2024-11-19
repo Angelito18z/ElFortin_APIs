@@ -9,7 +9,7 @@ describe('Pruebas de la API restaurantes', () => {
     // Ejecutar antes de cada prueba 'it'
     before(async () => {
          getAll = await restaurantesModelo.obtenerTodo();
-        getId = await restaurantesModelo.obtenerVentaId(1);
+        getId = await restaurantesModelo.obtenerRestauranteId(1);
     });
 
       // Ejecutar después de todas las pruebas 

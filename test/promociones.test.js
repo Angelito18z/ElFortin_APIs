@@ -9,7 +9,7 @@ describe('Pruebas de la API promociones', () => {
     // Ejecutar antes de cada prueba 'it'
     before(async () => {
          getAll = await promocionesModelo.obtenerTodo();
-        getId = await promocionesModelo.obtenerVentaId(1);
+        getId = await promocionesModelo.obtenerPromocionId(1);
     });
 
       // Ejecutar después de todas las pruebas 
