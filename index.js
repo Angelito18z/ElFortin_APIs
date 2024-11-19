@@ -6,6 +6,7 @@ import promocionRutas from './rutas/promociones/promocionRuta.js';
 import ventaRutas from './rutas/ventas/ventasRoutes.js';
 import productoRutas from './rutas/productos/productRoutes.js';
 import usuarioRutas from "./rutas/usuarios/usuariosRutas.js";
+import { swaggerDocs, swaggerUi } from "./config/swagger.js"; 
 
 import dotenv from "dotenv"; // Carga las variables de entorno desde el archivo .env
 dotenv.config();
@@ -22,8 +23,10 @@ app.use("/api", ventaRutas);
 app.use("/api", productoRutas);
 app.use("/api", usuarioRutas);
 
+// Documentación Swagger
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs)); // Ruta para acceder a la documentación
 // Inicia el servidor y escucha en el puerto definido
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 
 const server = app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`); // Muestra un mensaje en la consola indicando que el servidor está corriendo
