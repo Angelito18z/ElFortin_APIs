@@ -1,6 +1,8 @@
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import { OrderSchema, ProductSchema  } from './schemas.js';
+import dotenv from 'dotenv';
+dotenv.config(); // Cargar variables de entorno primero
 
 const swaggerOptions = {
   definition: {
@@ -16,7 +18,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: "http://localhost:3000/api",
+        url: process.env.URL,
         description: "Servidor local",
       },
     ],
