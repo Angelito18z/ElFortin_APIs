@@ -184,18 +184,6 @@ create table loyalty_points (
   deleted_at timestamp with time zone
 );
 
-create table promotions (
-  id bigint primary key generated always as identity,
-  name text not null,
-  description text,
-  discount_id bigint references discounts (id),
-  start_date date,
-  end_date date,
-  active boolean default true,
-  created_at timestamp with time zone default now(),
-  updated_at timestamp with time zone default now(),
-  deleted_at timestamp with time zone
-);
 
 create table shift_management (
   id bigint primary key generated always as identity,

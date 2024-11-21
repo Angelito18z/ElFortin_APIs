@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  nodejs-app:
+    image: node:18-alpine
+    container_name: nodejs-app
+    restart: always
+    working_dir: /app
+    volumes:
+      - /mnt/user/webpage:/app
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - DB_HOST=postgres
+      - DB_USER=postgres
+      - DB_PASSWORD=sql
+      - DB_NAME=PanaderiaElFortin
+      - SWAGGER_LOCAL=http://localhost:3000/api
+      - SWAGGER_PRODUCCION=https://fortin.christba.com/api
+    depends_on:
+      - postgresql17
+    networks:
+      - fortin
+
+  postgresql17:
+    image: postgres:17
+    container_name: postgresql17
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: sql
+      POSTGRES_DB: PanaderiaElFortin
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - fortin
+
+networks:
+  fortin:
+    driver: bridge
+
+volumes:
+  postgresql_data:

@@ -1,7 +1,8 @@
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import { OrderSchema, ProductSchema  } from './schemas.js';
+import { DetalleVentaSchema, DiscountSchema, OrderSchema, ProductSchema, RestaurantSchema, SupplierSchema, UserSchema  } from './schemas.js';
 import dotenv from 'dotenv';
+import User from '../modelos/usuarios/usuariosModel.js';
 dotenv.config(); // Cargar variables de entorno primero
 
 const swaggerOptions = {
@@ -18,14 +19,23 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: process.env.URL,
+        url: process.env.SWAGGER_LOCAL,
         description: "Servidor local",
+      },
+      {
+        url: `${process.env.SWAGGER_PRODUCCION}/api`,
+        description: "Servidor de producción",
       },
     ],
     components: {
       schemas: {
         Order: OrderSchema,
         Product: ProductSchema,
+        Discount: DiscountSchema,
+        Supplier: SupplierSchema,
+        Restaurant: RestaurantSchema,
+        User: UserSchema,
+        DetalleVenta: DetalleVentaSchema,
       },
     },
   },

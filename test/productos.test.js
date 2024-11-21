@@ -27,15 +27,15 @@ describe('Pruebas de la API productos', () => {
             expect( getAll[0]).to.be.an('object');
         });
 
-        it('Devuelve el código de estado 200 para GET /ventas', async () => {
-            const res = await request(app).get('/api/ventas');
+        it('Devuelve el código de estado 200 para GET /products', async () => {
+            const res = await request(app).get('/api/products');
             expect(res.status).to.equal(200);
         });
-        it('Devuelve el código de estado 404 si no se encuentran ventas', async () => {
-            const res = await request(app).get('/api/ventas/9999'); // ID que no existe
+        it('Devuelve el código de estado 404 si no se encuentran productos', async () => {
+            const res = await request(app).get('/api/products/9999'); // ID que no existe
             expect(res.status).to.equal(404);
         });
-        it('Cada venta devuelta tiene los campos correctos', () => {
+        it('Cada producto devuelta tiene los campos correctos', () => {
             expect( getAll[0]).to.have.property('id');
             expect( getAll[0]).to.have.property('restaurant_id');
             expect( getAll[0]).to.have.property('report_date');
@@ -47,7 +47,7 @@ describe('Pruebas de la API productos', () => {
     
     });
 
-    describe('Pruebas del metodo GET venta por id', () => {
+    describe('Pruebas del metodo GET producto por id', () => {
 
         it('Devuelve un objeto',  () => {
             expect(getId).to.be.an('object');
