@@ -1,6 +1,6 @@
 import express from 'express';
 import AutenticationController from '../../controladores/usuarios/authenticationController.js';
-
+import {login} from '../../controladores/usuarios/authController.js';
 const router = express.Router();
 
 /**
@@ -56,8 +56,9 @@ router.get('/usuarios/descargarExcel', AutenticationController.descargarUsuarios
  *       401:
  *         description: Invalid credentials
  */
-router.get('/login', AutenticationController.getUserByCredencials); // Get a user by credentials
+//router.get('/login', AutenticationController.getUserByCredencials); // Get a user by credentials
 
+router.post('/login', login); // Log in
 /**
  * @swagger
  * /usuarios:

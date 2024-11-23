@@ -3,7 +3,7 @@ import User from '../../modelos/usuarios/usuariosModel.js';
 import ExcelJS from 'exceljs';
 
 class AutenticationController {
-    
+    /*
     static async getUserByCredencials(req, res) {
         try {
             console.log('Cuerpo de la solicitud:', req.body);
@@ -26,7 +26,7 @@ class AutenticationController {
             res.status(500).json({ message: 'Error del servidor', error: error.message });
         }
     }
-
+*/
     static async getAllUsers(req, res) {
         try {
           const users = await User.findAll();

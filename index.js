@@ -8,6 +8,7 @@ import ventaRutas from './rutas/ventas/ventasRoutes.js';
 import productoRutas from './rutas/productos/productRoutes.js';
 import usuarioRutas from "./rutas/usuarios/usuariosRutas.js";
 import { swaggerDocs, swaggerUi } from "./config/swagger.js"; 
+import bodyParser from "body-parser";
 
 import dotenv from "dotenv"; // Load environment variables
 dotenv.config();
@@ -19,7 +20,8 @@ app.use(cors());  // This enables CORS for all incoming requests
 
 // Middleware to parse JSON requests
 app.use(express.json());
-
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 // Define routes
 app.use("/api", proveedorRutas);
 app.use("/api", orderRoutes);
