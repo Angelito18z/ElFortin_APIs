@@ -95,20 +95,26 @@ class User {
     }
 
     static async getUserByEmailOrUsername(data) {
-        const { emailOrUsername } = data;
-        TrimmedCredentials = emailOrUsername.trim();
-        if (!emailOrUsername || typeof emailOrUsername !== "string") {
+        const { emailOrNickname  } = data;
+
+        if (!emailOrNickname  || typeof emailOrNickname  !== "string") {
             throw new Error("Invalid input: Input must be a non-empty string.");
           }
+
+        const TrimmedCredentials = emailOrNickname.trim();
+
         const result = await pool.query(
             `
-            SELECT * 
-            FROM users 
-            WHERE LOWER(email) = LOWER($1) OR LOWER(nickname) = LOWER($1)
-            `,
+        SELECT 
+            id, name, email, phone, user_type, nickname, 
+            PGP_SYM_DECRYPT(password::bytea, 'AES_KEY') AS decrypted_password
+        FROM users 
+        WHERE LOWER(email) = LOWER($1) OR LOWER(nickname) = LOWER($1)
+        `,
             [TrimmedCredentials]
         );
-        return result.rows[0];
+        console.log(result.rows[0]);
+        return result.rows[0] || null;
     }
 }
 
