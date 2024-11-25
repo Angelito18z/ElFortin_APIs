@@ -16,14 +16,15 @@ class promocionModelo {
       description,
       discount_type,
       value,
+      image_url,
       start_date,
       end_date,
       active,
     } = data;
     const result = await pool.query(
-      `INSERT INTO discounts (code, description, discount_type, value, start_date, end_date, active) 
-         VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-      [code, description, discount_type, value, start_date, end_date, active]
+      `INSERT INTO discounts (code, description, discount_type, value, start_date, end_date, active, image_url) 
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+      [code, description, discount_type, value, start_date, end_date, active, image_url]
     );
 
     return result.rows[0];
@@ -36,6 +37,7 @@ class promocionModelo {
       description,
       discount_type,
       value,
+      image_url,
       start_date,
       end_date,
       active,
@@ -43,8 +45,8 @@ class promocionModelo {
     const result = await pool.query(
       `UPDATE discounts 
          SET code = $1, description = $2, discount_type = $3, value = $4, 
-             start_date = $5, end_date = $6, active = $7, updated_at = CURRENT_TIMESTAMP 
-         WHERE id = $8 AND deleted_at IS NULL 
+             start_date = $5, end_date = $6, active = $7, image_url = $8, updated_at = CURRENT_TIMESTAMP 
+         WHERE id = $9 AND deleted_at IS NULL 
          RETURNING *`,
       [
         code,
@@ -54,6 +56,7 @@ class promocionModelo {
         start_date,
         end_date,
         active,
+        image_url,
         id,
       ]
     );
@@ -109,7 +112,8 @@ class promocionModelo {
             CAST(discount_type AS TEXT) ILIKE $1 OR
             CAST(value AS TEXT) ILIKE $1 OR
             CAST(start_date AS TEXT) ILIKE $1 OR
-            CAST(end_date AS TEXT) ILIKE $1) 
+            CAST(end_date AS TEXT) ILIKE $1) OR
+            CAST(image_url AS TEXT) ILIKE $1)
            AND deleted_at IS NULL AND active = true`,
       [`%${filtros}%`]
     );

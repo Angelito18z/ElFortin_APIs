@@ -9,6 +9,7 @@ SELECT
     mi.name,
     mi.description,
     mi.price,
+    image_url,
     c.name as category_name,
     mi.pre_tax_cost,
     mi.post_tax_cost,
@@ -33,9 +34,10 @@ WHERE
       category_id,
       pre_tax_cost,
       post_tax_cost,
+      image_url,
     } = data;
     const result = await pool.query(
-      "INSERT INTO menu_items (restaurant_id, name, description, price, category_id, pre_tax_cost, post_tax_cost, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, current_timestamp) RETURNING *",
+      "INSERT INTO menu_items (restaurant_id, name, description, price, category_id, pre_tax_cost, post_tax_cost, image_url, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, current_timestamp) RETURNING *",
       [
         restaurant_id,
         name,
@@ -44,6 +46,7 @@ WHERE
         category_id,
         pre_tax_cost,
         post_tax_cost,
+        image_url,
       ]
     );
     return result.rows[0];

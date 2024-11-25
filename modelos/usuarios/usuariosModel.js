@@ -2,25 +2,7 @@ import bcrypt from 'bcrypt';
 import pool from '../../config/db.js';
 
 class User {
-    /*static async findByCredencials(correo, contrasena) {
-        const nameTrimmed = correo.trim();
-        const contrasenaTrimmed = contrasena.trim();
 
-        const result = await pool.query(
-            'SELECT * FROM users WHERE LOWER(name) = LOWER($1)',
-            [nameTrimmed]
-        );
-
-        const user = result.rows[0];
-
-        // Check if user exists and the password matches
-        if (user && await bcrypt.compare(contrasenaTrimmed, user.encrypted_password)) {
-            return user;
-        }
-
-        return null;
-    }
-    */
     static async findAll() {
         const result = await pool.query('SELECT * FROM users WHERE deleted_at IS NULL');
         return result.rows;
@@ -32,22 +14,22 @@ class User {
     }
 
     static async create(data) {
-        const { name, email, phone, user_type, nickname, password } = data;
+        const { name, email, phone, user_type, nickname, password,image_url } = data;
 
         // Hash the password before storing
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
         const result = await pool.query(
-            'INSERT INTO users (name, email, phone, user_type, nickname, encrypted_password) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-            [name, email, phone, user_type, nickname, hashedPassword]
+            'INSERT INTO users (name, email, phone, user_type, nickname, encrypted_password, image_url) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+            [name, email, phone, user_type, nickname, hashedPassword,image_url]
         );
 
         return result.rows[0];
     }
 
     static async update(id, data) {
-        const { name, email, phone, user_type, nickname, password } = data;
+        const { name, email, phone, user_type, nickname, password, image_url } = data;
 
         let hashedPassword = null;
 
@@ -67,10 +49,11 @@ class User {
                 user_type = $4,
                 nickname = $5,
                 encrypted_password = COALESCE($6, encrypted_password) -- Update password only if provided
-            WHERE id = $7
+                image_url = $7
+            WHERE id = $8
             RETURNING *
             `,
-            [name, email, phone, user_type, nickname, hashedPassword, id]
+            [name, email, phone, user_type, nickname, hashedPassword, image_url, id]
         );
 
         return result.rows[0];
