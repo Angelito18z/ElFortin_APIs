@@ -1,7 +1,7 @@
-
 create table categories (
   id bigint primary key generated always as identity,
   name VARCHAR(50) not null,
+  image_url text,
   created_at timestamp with time zone default now(),
   updated_at timestamp with time zone default now(),
   deleted_at timestamp with time zone
@@ -30,10 +30,7 @@ create table discounts (
   value numeric(5, 2) not null,
   start_date date,
   end_date date,
-  active boolean default true,
-  created_at timestamp with time zone default now(),
-  updated_at timestamp with time zone default now(),
-  deleted_at timestamp with time zone
+  active boolean default true
 );
 
 create table restaurants (
@@ -51,6 +48,7 @@ create table menu_items (
   restaurant_id bigint references restaurants (id),
   name text not null,
   description text,
+  image_url text,
   price numeric(5, 2) not null,
   category_id bigint references categories (id),
   pre_tax_cost numeric(5, 2),
@@ -65,6 +63,7 @@ CREATE TABLE users (
     name TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
     phone TEXT,
+    image_url text,
     user_type TEXT CHECK (user_type IN ('client', 'worker')) NOT NULL,
     nickname TEXT,
     encrypted_password TEXT,  -- Store the hashed password
@@ -153,6 +152,7 @@ create table inventory (
 
 create table reviews (
   id bigint primary key generated always as identity,
+  image_url text,
   restaurant_id bigint references restaurants (id),
   user_id bigint references users (id),
   rating int check (
@@ -184,6 +184,19 @@ create table loyalty_points (
   deleted_at timestamp with time zone
 );
 
+create table promotions (
+  id bigint primary key generated always as identity,
+  name text not null,
+  description text,
+  image_url text,
+  discount_id bigint references discounts (id),
+  start_date date,
+  end_date date,
+  active boolean default true,
+  created_at timestamp with time zone default now(),
+  updated_at timestamp with time zone default now(),
+  deleted_at timestamp with time zone
+);
 
 create table shift_management (
   id bigint primary key generated always as identity,
@@ -210,6 +223,7 @@ create table sales_reports (
   id bigint primary key generated always as identity,
   restaurant_id bigint references restaurants (id),
   report_date date not null,
+  pdf_url text,
   total_sales numeric(10, 2) not null,
   created_at timestamp with time zone default now(),
   updated_at timestamp with time zone default now(),
@@ -326,37 +340,48 @@ CREATE TABLE error_logs (
 );
 -----------------------------------------------------------------
 --table funtions
+
 CREATE OR REPLACE FUNCTION log_changes()
 RETURNS TRIGGER AS $$
+DECLARE
+  log_table_name text;  -- Variable para guardar el nombre de la tabla de logs
 BEGIN
+  -- Obtener el nombre de la tabla de logs desde TG_ARGV[0]
+  log_table_name := TG_ARGV[0];
+
+  -- Determinar la operación
   IF (TG_OP = 'INSERT') THEN
-    INSERT INTO logs (table_name, operation, new_data)
-    VALUES (TG_TABLE_NAME, TG_OP, row_to_json(NEW));
-    RETURN NEW;
+    EXECUTE format(
+      'INSERT INTO %I (operation, new_data, changed_at) VALUES ($1, $2, now())',
+      log_table_name
+    ) USING TG_OP, row_to_json(NEW);
 
   ELSIF (TG_OP = 'UPDATE') THEN
-    INSERT INTO logs (table_name, operation, old_data, new_data)
-    VALUES (TG_TABLE_NAME, TG_OP, row_to_json(OLD), row_to_json(NEW));
-    RETURN NEW;
+    EXECUTE format(
+      'INSERT INTO %I (operation, old_data, new_data, changed_at) VALUES ($1, $2, $3, now())',
+      log_table_name
+    ) USING TG_OP, row_to_json(OLD), row_to_json(NEW);
 
   ELSIF (TG_OP = 'DELETE') THEN
-    INSERT INTO logs (table_name, operation, old_data)
-    VALUES (TG_TABLE_NAME, TG_OP, row_to_json(OLD));
-    RETURN OLD;
+    EXECUTE format(
+      'INSERT INTO %I (operation, old_data, changed_at) VALUES ($1, $2, now())',
+      log_table_name
+    ) USING TG_OP, row_to_json(OLD);
   END IF;
 
   RETURN NULL;
 
 EXCEPTION
   WHEN OTHERS THEN
-    -- Log the error message to a separate error log table or raise an exception
+    -- Registrar errores en una tabla de errores
     INSERT INTO error_logs (error_message, table_name, operation, timestamp)
     VALUES (SQLERRM, TG_TABLE_NAME, TG_OP, now());
     
-    -- Optionally raise an exception to halt the operation
     RAISE EXCEPTION 'Error in log_changes function: %', SQLERRM;
 END;
 $$ LANGUAGE plpgsql;
+
+
 
 
 -----------------------------------------------------------------
@@ -365,67 +390,67 @@ CREATE TRIGGER log_discounts_changes
 AFTER INSERT OR UPDATE OR DELETE
 ON discounts
 FOR EACH ROW
-EXECUTE FUNCTION log_changes();
+EXECUTE FUNCTION log_changes('discounts_log');
 
 CREATE TRIGGER log_menu_items_changes
 AFTER INSERT OR UPDATE OR DELETE
 ON menu_items
 FOR EACH ROW
-EXECUTE FUNCTION log_changes();
+EXECUTE FUNCTION log_changes('menu_items_log');
 
 CREATE TRIGGER log_users_changes
 AFTER INSERT OR UPDATE OR DELETE
 ON users
 FOR EACH ROW
-EXECUTE FUNCTION log_changes();
+EXECUTE FUNCTION log_changes('users_log');
 
 CREATE TRIGGER log_orders_changes
 AFTER INSERT OR UPDATE OR DELETE
 ON orders
 FOR EACH ROW
-EXECUTE FUNCTION log_changes();
+EXECUTE FUNCTION log_changes('orders_log');
 
 CREATE TRIGGER log_order_items_changes
 AFTER INSERT OR UPDATE OR DELETE
 ON order_items
 FOR EACH ROW
-EXECUTE FUNCTION log_changes();
+EXECUTE FUNCTION log_changes('order_items_log');
 
 CREATE TRIGGER log_workers_changes
 AFTER INSERT OR UPDATE OR DELETE
 ON workers
 FOR EACH ROW
-EXECUTE FUNCTION log_changes();
+EXECUTE FUNCTION log_changes('workers_log');
 
 CREATE TRIGGER log_recipes_changes
 AFTER INSERT OR UPDATE OR DELETE
 ON recipes
 FOR EACH ROW
-EXECUTE FUNCTION log_changes();
+EXECUTE FUNCTION log_changes('recipes_log');
 
 CREATE TRIGGER log_inventory_changes
 AFTER INSERT OR UPDATE OR DELETE
 ON inventory
 FOR EACH ROW
-EXECUTE FUNCTION log_changes();
+EXECUTE FUNCTION log_changes('inventory_log');
 
 CREATE TRIGGER log_shift_management_changes
 AFTER INSERT OR UPDATE OR DELETE
 ON shift_management
 FOR EACH ROW
-EXECUTE FUNCTION log_changes();
+EXECUTE FUNCTION log_changes('shift_management_log');
 
 CREATE TRIGGER log_reviews_changes
 AFTER INSERT OR UPDATE OR DELETE
 ON reviews
 FOR EACH ROW
-EXECUTE FUNCTION log_changes();
+EXECUTE FUNCTION log_changes('reviews_log');
 
 CREATE TRIGGER log_feedback_changes
 AFTER INSERT OR UPDATE OR DELETE
 ON feedback
 FOR EACH ROW
-EXECUTE FUNCTION log_changes();
+EXECUTE FUNCTION log_changes('feedback_log');
 
 ---------------------------------------------------------------------------
 --funcion para proteger datos de bitacora
@@ -442,57 +467,57 @@ $$ LANGUAGE plpgsql;
 ---------------------------------------------------------------------------
 --triggers para proteger datos de bitacora
 CREATE TRIGGER trigger_proteger_datos_bitacora_descuentos
-BEFORE DELETE OR UPDATE ON BITACORA_DESCUENTOS
+BEFORE DELETE OR UPDATE ON discounts_log
 FOR EACH ROW
 EXECUTE FUNCTION proteger_datos();
 
 CREATE TRIGGER trigger_proteger_datos_bitacora_menu_items
-BEFORE DELETE OR UPDATE ON BITACORA_MENU_ITEMS
+BEFORE DELETE OR UPDATE ON menu_items_log
 FOR EACH ROW
 EXECUTE FUNCTION proteger_datos();
 
 CREATE TRIGGER trigger_proteger_datos_bitacora_usuarios
-BEFORE DELETE OR UPDATE ON BITACORA_USUARIOS
+BEFORE DELETE OR UPDATE ON users_log
 FOR EACH ROW
 EXECUTE FUNCTION proteger_datos();
 
 CREATE TRIGGER trigger_proteger_datos_bitacora_ordenes
-BEFORE DELETE OR UPDATE ON BITACORA_ORDENES
+BEFORE DELETE OR UPDATE ON orders_log
 FOR EACH ROW
 EXECUTE FUNCTION proteger_datos();
 
 CREATE TRIGGER trigger_proteger_datos_bitacora_orden_items
-BEFORE DELETE OR UPDATE ON BITACORA_ORDEN_ITEMS
+BEFORE DELETE OR UPDATE ON order_items_log
 FOR EACH ROW
 EXECUTE FUNCTION proteger_datos();
 
 CREATE TRIGGER trigger_proteger_datos_bitacora_trabajadores
-BEFORE DELETE OR UPDATE ON BITACORA_TRABAJADORES
+BEFORE DELETE OR UPDATE ON workers_log
 FOR EACH ROW
 EXECUTE FUNCTION proteger_datos();
 
 CREATE TRIGGER trigger_proteger_datos_bitacora_recetas
-BEFORE DELETE OR UPDATE ON BITACORA_RECETAS
+BEFORE DELETE OR UPDATE ON recipes_log
 FOR EACH ROW
 EXECUTE FUNCTION proteger_datos();
 
 CREATE TRIGGER trigger_proteger_datos_bitacora_inventario
-BEFORE DELETE OR UPDATE ON BITACORA_INVENTARIO
+BEFORE DELETE OR UPDATE ON inventory_log
 FOR EACH ROW
 EXECUTE FUNCTION proteger_datos();
 
 CREATE TRIGGER trigger_proteger_datos_bitacora_gestion_turnos
-BEFORE DELETE OR UPDATE ON BITACORA_GESTION_TURNOS
+BEFORE DELETE OR UPDATE ON shift_management_log
 FOR EACH ROW
 EXECUTE FUNCTION proteger_datos();
 
 CREATE TRIGGER trigger_proteger_datos_bitacora_reviews
-BEFORE DELETE OR UPDATE ON BITACORA_REVIEWS
+BEFORE DELETE OR UPDATE ON reviews_log
 FOR EACH ROW
 EXECUTE FUNCTION proteger_datos();
 
 CREATE TRIGGER trigger_proteger_datos_bitacora_feedback
-BEFORE DELETE OR UPDATE ON BITACORA_FEEDBACK
+BEFORE DELETE OR UPDATE ON feedback_log
 FOR EACH ROW
 EXECUTE FUNCTION proteger_datos();
 
@@ -564,3 +589,51 @@ BEGIN
     RETURN crypt(user_password, stored_salt) = stored_hash;
 END;
 $$ LANGUAGE plpgsql;
+
+
+-- Insert de ejemplo
+INSERT INTO categories (name) VALUES
+('Bebidas'),
+('Entradas'),
+('Platos Principales'),
+('Postres');
+
+INSERT INTO payment_methods (name) VALUES
+('Tarjeta de Crédito'),
+('Efectivo'),
+('Pago Móvil');
+
+INSERT INTO order_statuses (name) VALUES
+('Pendiente'),
+('En preparación'),
+('Listo para entregar'),
+('Entregado');
+
+INSERT INTO preparation_areas (name) VALUES
+('Cocina'),
+('Bar');
+
+INSERT INTO restaurants (name, location, opening_hours) VALUES
+('Restaurante A', 'Ubicación A', '08:00 - 22:00'),
+('Restaurante B', 'Ubicación B', '10:00 - 20:00');
+
+INSERT INTO menu_items (restaurant_id, name, description, price, category_id) VALUES
+(1, 'Café', 'Café recién hecho', 30.00, 1),
+(1, 'Sopa', 'Sopa de pollo', 50.00, 2),
+(2, 'Pizza', 'Pizza de pepperoni', 100.00, 3),
+(2, 'Tarta', 'Tarta de manzana', 40.00, 4);
+
+-- Crear registros de usuario
+INSERT INTO users (name, email, phone, user_type) VALUES
+('Juan Pérez', 'juan@example.com', '123456789', 'client'),
+('Ana García', 'ana@example.com', '987654321', 'worker');
+
+-- Crear un pedido de ejemplo
+INSERT INTO orders (table_number, restaurant_id, total_amount, client_id, order_type) VALUES
+(5, 1, 150.00, 1, 'in_store');
+
+-- Crear items del pedido
+INSERT INTO order_items (order_id, menu_item_id, quantity, item_cost) VALUES
+(1, 1, 2, 30.00),
+(1, 2, 1, 50.00);
+
