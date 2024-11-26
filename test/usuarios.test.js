@@ -8,7 +8,7 @@ describe('Pruebas de la API usuarios', () => {
     
     // Ejecutar antes de cada prueba 'it'
     before(async () => {
-         getAll = await usuariosModel.obtenerTodo();
+         getAll = await usuariosModel.findAll();
         getId = await usuariosModel.findById(1);
     });
 
@@ -27,19 +27,23 @@ describe('Pruebas de la API usuarios', () => {
             expect( getAll[0]).to.be.an('object');
         });
 
-        it('Devuelve el código de estado 200 para GET /ventas', async () => {
-            const res = await request(app).get('/api/ventas');
+        it('Devuelve el código de estado 200 para GET /usuarios', async () => {
+            const res = await request(app).get('/api/usuarios');
             expect(res.status).to.equal(200);
         });
-        it('Devuelve el código de estado 404 si no se encuentran ventas', async () => {
-            const res = await request(app).get('/api/ventas/9999'); // ID que no existe
+        it('Devuelve el código de estado 404 si no se encuentran usuarios', async () => {
+            const res = await request(app).get('/api/usuarios/9999'); // ID que no existe
             expect(res.status).to.equal(404);
         });
-        it('Cada venta devuelta tiene los campos correctos', () => {
+        it('Cada usuario devuelta tiene los campos correctos', () => {
             expect( getAll[0]).to.have.property('id');
-            expect( getAll[0]).to.have.property('restaurant_id');
-            expect( getAll[0]).to.have.property('report_date');
-            expect( getAll[0]).to.have.property('total_sales');
+            expect( getAll[0]).to.have.property('name');
+            expect( getAll[0]).to.have.property('email');
+            expect( getAll[0]).to.have.property('phone');
+            expect( getAll[0]).to.have.property('image_url');
+            expect( getAll[0]).to.have.property('nickname');
+            expect( getAll[0]).to.have.property('encrypted_password');
+            expect( getAll[0]).to.have.property('salt');
             expect( getAll[0]).to.have.property('created_at');
             expect( getAll[0]).to.have.property('updated_at');
             expect( getAll[0]).to.have.property('deleted_at');
@@ -47,7 +51,7 @@ describe('Pruebas de la API usuarios', () => {
     
     });
 
-    describe('Pruebas del metodo GET venta por id', () => {
+    describe('Pruebas del metodo GET usuario por id', () => {
 
         it('Devuelve un objeto',  () => {
             expect(getId).to.be.an('object');
