@@ -30,7 +30,7 @@ create table discounts (
   value numeric(5, 2) not null,
   start_date date,
   end_date date,
-  activate boolean default true,
+  active boolean default true,
   created_at timestamp with time zone default now(),
   updated_at timestamp with time zone default now(),
   deleted_at timestamp with time zone
@@ -616,9 +616,19 @@ INSERT INTO preparation_areas (name) VALUES
 ('Cocina'),
 ('Bar');
 
+-- Insertar datos en la tabla restaurants con datos más realistas
 INSERT INTO restaurants (name, location, opening_hours) VALUES
-('Restaurante A', 'Ubicación A', '08:00 - 22:00'),
-('Restaurante B', 'Ubicación B', '10:00 - 20:00');
+    ('La Pizzería de Giovanni', 'Calle Mayor 123, Madrid', '12:00 - 23:00'),
+    ('Sushi & Roll', 'Avenida de la Playa 45, Barcelona', '13:00 - 22:00'),
+    ('Café Central', 'Plaza Mayor 7, Salamanca', '08:00 - 20:00'),
+    ('El Asador del Valle', 'Calle del Valle 21, Valencia', '11:00 - 23:30'),
+    ('Comida Mexicana El Gusto', 'Calle del Sol 15, Sevilla', '10:30 - 22:30'),
+    ('Restaurante Vegano Verde', 'Calle Eco 5, Madrid', '09:00 - 21:00'),
+    ('La Parrillada Argentina', 'Avenida del Río 18, Zaragoza', '12:00 - 23:00'),
+    ('Mariscos El Delfín', 'Puerto Pesquero 34, Cádiz', '10:00 - 20:00'),
+    ('La Casa de las Tapas', 'Calle del Mar 50, Málaga', '11:00 - 23:00'),
+    ('Bistro Francés', 'Calle de la Cultura 8, Barcelona', '09:00 - 22:00');
+
 
 INSERT INTO menu_items (restaurant_id, name, description, price, category_id) VALUES
 (1, 'Café', 'Café recién hecho', 30.00, 1),
@@ -683,3 +693,12 @@ VALUES
 INSERT INTO suppliers (name) 
 VALUES 
 ('Proveedor Anónimo'); -- Sin contacto
+
+
+-- Insertar datos en la tabla sales_reports
+INSERT INTO sales_reports (restaurant_id, report_date, pdf_url, total_sales)
+VALUES
+    (1, '2024-11-01', 'https://example.com/reports/november_2024.pdf', 15000.00),
+    (2, '2024-11-02', 'https://example.com/reports/november_2024_02.pdf', 20000.00),
+    (3, '2024-11-03', 'https://example.com/reports/november_2024_03.pdf', 12000.50),
+    (4, '2024-11-04', 'https://example.com/reports/november_2024_04.pdf', 18000.75);
