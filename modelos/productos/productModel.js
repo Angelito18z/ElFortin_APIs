@@ -3,28 +3,28 @@ import pool from "../../config/db.js";
 class Product {
   static async findAll() {
     const result = await pool.query(`
-SELECT 
-    mi.id,
-    mi.restaurant_id,
-    mi.name,
-    mi.description,
-    mi.price,
-    mi.image_url,
-    c.name as category_name,
-    mi.pre_tax_cost,
-    mi.post_tax_cost,
-    mi.created_at,
-    mi.updated_at,
-    mi.deleted_at
-FROM 
-    menu_items mi
-JOIN 
-    categories c ON mi.category_id = c.id
-WHERE 
-    mi.deleted_at IS NULL;        `);
+      SELECT 
+        mi.id,
+        mi.restaurant_id,
+        mi.name,
+        mi.description,
+        mi.price,
+        mi.image_url,  -- Explicitly specify mi for image_url
+        c.name as category_name,
+        mi.pre_tax_cost,
+        mi.post_tax_cost,
+        mi.created_at,
+        mi.updated_at,
+        mi.deleted_at
+      FROM 
+        menu_items mi
+      JOIN 
+        categories c ON mi.category_id = c.id
+      WHERE 
+        mi.deleted_at IS NULL;
+    `);
     return result.rows;
   }
-
   static async create(data) {
     const {
       restaurant_id,
@@ -99,10 +99,11 @@ WHERE
       category_id,
       pre_tax_cost,
       post_tax_cost,
+      image_url,
     } = data;
     const result = await pool.query(
-      "UPDATE menu_items SET name=$1, description=$2, price=$3, category_id=$4, pre_tax_cost=$5, post_tax_cost=$6, updated_at = now() WHERE id=$7 AND deleted_at IS NULL RETURNING *",
-      [name, description, price, category_id, pre_tax_cost, post_tax_cost, id]
+      "UPDATE menu_items SET name=$1, description=$2, price=$3, category_id=$4, pre_tax_cost=$5, post_tax_cost=$6, image_url=$7, updated_at = now() WHERE id=$8 AND deleted_at IS NULL RETURNING *",
+      [name, description, price, category_id, pre_tax_cost, post_tax_cost, image_url, id]
     );
     return result.rows[0];
   }

@@ -106,15 +106,14 @@ class promocionModelo {
   static async obtenerPromocionesFiltro(filtros) {
     const result = await pool.query(
       `SELECT * FROM discounts 
-         WHERE 
-           (CAST(code AS TEXT) ILIKE $1 OR 
-            CAST(description AS TEXT) ILIKE $1 OR
-            CAST(discount_type AS TEXT) ILIKE $1 OR
-            CAST(value AS TEXT) ILIKE $1 OR
-            CAST(start_date AS TEXT) ILIKE $1 OR
-            CAST(end_date AS TEXT) ILIKE $1) OR
-            CAST(image_url AS TEXT) ILIKE $1)
-           AND deleted_at IS NULL AND active = true`,
+       WHERE 
+         (CAST(code AS TEXT) ILIKE $1 OR 
+          CAST(description AS TEXT) ILIKE $1 OR
+          CAST(discount_type AS TEXT) ILIKE $1 OR
+          CAST(value AS TEXT) ILIKE $1 OR
+          CAST(start_date AS TEXT) ILIKE $1 OR
+          CAST(end_date AS TEXT) ILIKE $1 
+         AND deleted_at IS NULL AND active = true`,
       [`%${filtros}%`]
     );
     return result.rows;

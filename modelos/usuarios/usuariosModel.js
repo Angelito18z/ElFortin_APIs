@@ -48,7 +48,7 @@ class User {
                 phone = $3,
                 user_type = $4,
                 nickname = $5,
-                encrypted_password = COALESCE($6, encrypted_password) -- Update password only if provided
+                encrypted_password = COALESCE($6, encrypted_password) -- Update password only if provided,
                 image_url = $7
             WHERE id = $8
             RETURNING *

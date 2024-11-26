@@ -1,4 +1,5 @@
 import express from 'express';
+import uploadImage from '../../middlewares/uploadMiddleware.js'
 import AutenticationController from '../../controladores/usuarios/authenticationController.js';
 import {login} from '../../controladores/usuarios/authController.js';
 const router = express.Router();
@@ -101,6 +102,7 @@ router.get('/usuarios', AutenticationController.getAllUsers); // Get all users
  *         description: User not found
  */
 router.get('/usuarios/:id', AutenticationController.getUserById); // Get a user by ID
+router.post('/users/:id/upload', uploadImage.single('image'), AutenticationController.uploadUserImage);
 
 /**
  * @swagger
