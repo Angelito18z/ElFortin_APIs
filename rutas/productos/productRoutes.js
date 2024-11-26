@@ -1,4 +1,6 @@
 import express from "express";
+import upload from '../../config/multer.js'; // Adjust the path based on your folder structure
+
 import ProductController from "../../controladores/productos/productController.js"; // Update to reference the correct controller
 const router = express.Router();
 
@@ -68,7 +70,7 @@ router.get('/products/:id', ProductController.getProductById); // Get a product 
  *       201:
  *         description: Product created successfully
  */
-router.post('/products', ProductController.createProduct); // Create a new product
+router.post('/products', upload.single('image'),ProductController.createProduct); // Create a new product
 
 /**
  * @swagger
@@ -95,7 +97,7 @@ router.post('/products', ProductController.createProduct); // Create a new produ
  *       404:
  *         description: Product not found
  */
-router.put('/products/:id', ProductController.updateProduct); // Update a product by ID
+router.put('/products/:id', upload.single('image'), ProductController.updateProduct); // Update a product by ID
 
 /**
  * @swagger

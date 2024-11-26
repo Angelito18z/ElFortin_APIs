@@ -1,5 +1,6 @@
 import Product from "../../modelos/productos/productModel.js";
 import ExcelJS from 'exceljs';
+import { uploadToCloudinaryProducts } from '../../config/cloudinary.js';
 
 class ProductController {
   static async getAllProducts(req, res) {
@@ -17,19 +18,21 @@ class ProductController {
 
   static async createProduct(req, res) {
     try {
-      const product = await Product.create(req.body);
+      const { body } = req;
+      const filePath = req.file?.path;  // Get the uploaded file path from multer
+
+      const product = await Product.create(body, filePath);
       return res.status(201).json({
           status: 'success',
           message: 'Product created successfully',
-          data: product,
+          product
+
       });
+
   } catch (error) {
-      return res.status(500).json({
-          status: 'error',
-          message: error.message,
-          stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
-      });
-  }
+            console.error('Error creating product:', error);
+            res.status(500).json({ message: 'Error del servidor', error: error.message });
+        }
   }
 
   static async getProductById(req, res) {
@@ -57,26 +60,37 @@ class ProductController {
 
   static async updateProduct(req, res) {
     try {
-      const product = await Product.update(req.params.id, req.body);
-      if (!product) {
-          return res.status(404).json({
-              status: 'error',
-              message: 'Product not found',
-          });
-      }
-      return res.status(200).json({
-          status: 'success',
-          message: 'Product updated successfully',
-          data: product,
-      });
-  } catch (error) {
-      return res.status(500).json({
-          status: 'error',
-          message: error.message,
-          stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
-      });
-  }
-  }  
+        const { id } = req.params; // Get the product ID from the URL parameter
+        const { body } = req; // Get the updated product data from the request body
+        const filePath = req.file?.path;  // Get the uploaded file path from multer (if any)
+        
+        // Call the update method of the Product model, passing the product ID, updated data, and filePath
+        const product = await Product.update(id, body, filePath);
+
+        // If the product was not found, return a 404 error
+        if (!product) {
+            return res.status(404).json({
+                status: 'error',
+                message: 'Product not found',
+            });
+        }
+
+        // Return the updated product in the response
+        return res.status(200).json({
+            status: 'success',
+            message: 'Product updated successfully',
+            data: product,
+        });
+    } catch (error) {
+        // Handle errors and send a 500 response with the error message
+        return res.status(500).json({
+            status: 'error',
+            message: error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
+        });
+    }
+}
+
   static async deleteProduct(req, res) {
     try {
       const product = await Product.delete(req.params.id);

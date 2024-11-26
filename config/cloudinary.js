@@ -17,4 +17,17 @@ export const uploadToCloudinary = async (filePath) => {
         console.error('Cloudinary upload error:', error);
         throw error;
     }
+
+};
+export const uploadToCloudinaryProducts = async (filePath) => {
+    try {
+        const result = await cloudinary.uploader.upload(filePath, {
+            folder: 'products', // Optional: You can specify a folder for better organization
+        });
+        return result.secure_url; // Cloudinary provides a URL for the uploaded image
+    } catch (error) {
+        console.error('Cloudinary upload error:', error);
+        throw error;
+    }
+
 };

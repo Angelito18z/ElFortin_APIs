@@ -31,7 +31,6 @@ class User {
             'INSERT INTO users (name, email, phone, user_type, nickname, encrypted_password, image_url) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
             [name, email, phone, user_type, nickname, hashedPassword, imageUrl]
         );
-        console.log(result.rows[0]);  // Log the response to check what was inserted
         return result.rows[0];
     }
 

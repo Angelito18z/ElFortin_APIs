@@ -44,32 +44,40 @@ class AutenticationController {
     }
 
 
-    static async updateUser(req, res) {
-        try {
-            const { body } = req;
-            const { id } = req.params;
-            const filePath = req.file?.path; // Get the uploaded file path if provided
-            let imageUrl = null;
-    
-            if (filePath) {
-                // Upload new image to Cloudinary
-                imageUrl = await uploadToCloudinary(filePath);
-            }
-    
-            // Add image URL to the user data if a new image was uploaded
-            const updatedData = { ...body, image_url: imageUrl || body.image_url };
-    
-            const user = await User.update(id, updatedData);
-    
-            if (!user) {
-                return res.status(404).json({ message: 'Usuario no encontrado' });
-            }
-    
-            res.json({ message: "Usuario actualizado exitosamente", user });
-        } catch (error) {
-            console.error('Error updating user:', error);
-            res.status(500).json({ error: error.message });
+    static async updateUser(id, data, filePath) {
+        const { name, email, phone, user_type, nickname, password } = data;
+        
+        let hashedPassword = null;
+        if (password) {
+            // Hash the new password if provided
+            const saltRounds = 10;
+            hashedPassword = await bcrypt.hash(password, saltRounds);
         }
+
+        // Upload new image to Cloudinary if a filePath is provided
+        let imageUrl = null;
+        if (filePath) {
+            imageUrl = await uploadToCloudinary(filePath);
+        } 
+
+        const result = await pool.query(
+            `
+            UPDATE users
+            SET 
+                name = $1,
+                email = $2,
+                phone = $3,
+                user_type = $4,
+                nickname = $5,
+                encrypted_password = COALESCE($6, encrypted_password),
+                image_url = COALESCE($7, image_url) -- Update image URL only if provided
+            WHERE id = $8
+            RETURNING *
+            `,
+            [name, email, phone, user_type, nickname, hashedPassword, imageUrl, id]
+        );
+
+        return result.rows[0];
     }
 
     static async deleteUser(req, res) {
