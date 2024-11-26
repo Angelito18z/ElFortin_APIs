@@ -70,7 +70,6 @@ CREATE TABLE users (
     user_type TEXT CHECK (user_type IN ('client', 'worker')) NOT NULL,
     nickname TEXT,
     encrypted_password TEXT,  -- Store the hashed password
-    salt TEXT,                -- Store the salt used for hashing
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
     deleted_at TIMESTAMP WITH TIME ZONE
@@ -557,41 +556,6 @@ EXECUTE FUNCTION encrypt_passwords();
 -- Enable the pgcrypto extension
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
-
-
--- Function to hash passwords with a randomly generated salt
-CREATE OR REPLACE FUNCTION hash_passwords()
-RETURNS TRIGGER AS $$
-DECLARE
-    salt TEXT;
-BEGIN
-    -- Generate a random salt using bcrypt
-    salt := gen_salt('bf');  
-
-    -- Hash the password with the salt
-    NEW.encrypted_password := crypt(NEW.encrypted_password, salt);
-    
-    -- Store the salt in a separate column
-    NEW.salt := salt; 
-
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
--- Trigger for the users table
-CREATE TRIGGER hash_passwords_trigger
-BEFORE INSERT OR UPDATE ON users
-FOR EACH ROW
-EXECUTE FUNCTION hash_passwords();
-
--- Function to verify the password
-CREATE OR REPLACE FUNCTION verify_password(user_password TEXT, stored_hash TEXT, stored_salt TEXT)
-RETURNS BOOLEAN AS $$
-BEGIN
-    -- Compare the hashed input password with the stored hash
-    RETURN crypt(user_password, stored_salt) = stored_hash;
-END;
-$$ LANGUAGE plpgsql;
 
 
 -- Insert de ejemplo
