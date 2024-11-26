@@ -27,12 +27,12 @@ describe('Pruebas de la API proveedores', () => {
             expect( getAll[0]).to.be.an('object');
         });
 
-        it('Devuelve el código de estado 200 para GET /ventas', async () => {
-            const res = await request(app).get('/api/ventas');
+        it('Devuelve el código de estado 200 para GET /proveedores', async () => {
+            const res = await request(app).get('/api/proveedores');
             expect(res.status).to.equal(200);
         });
-        it('Devuelve el código de estado 404 si no se encuentran ventas', async () => {
-            const res = await request(app).get('/api/ventas/9999'); // ID que no existe
+        it('Devuelve el código de estado 404 si no se encuentran proveedores', async () => {
+            const res = await request(app).get('/api/proveedores/9999'); // ID que no existe
             expect(res.status).to.equal(404);
         });
         it('Cada proveedor devuelto tiene los campos correctos', () => {
@@ -46,7 +46,7 @@ describe('Pruebas de la API proveedores', () => {
     
     });
 
-    describe('Pruebas del metodo GET venta por id', () => {
+    describe('Pruebas del metodo GET proveedor por id', () => {
 
         it('Devuelve un objeto',  () => {
             expect(getId).to.be.an('object');
