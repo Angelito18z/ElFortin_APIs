@@ -89,32 +89,6 @@ class AutenticationController {
         }
     }
 
-    // Upload User Image
-    static async uploadUserImage(req, res) {
-        try {
-            if (!req.file) {
-                return res.status(400).json({ message: 'Image upload failed' });
-            }
-
-            const userId = req.params.id;
-            const imagePath = `/uploads/users/${req.file.filename}`;
-
-            const user = await User.findById(userId);
-            if (!user) {
-                fs.unlinkSync(path.join('uploads/users', req.file.filename)); // Remove uploaded file
-                return res.status(404).json({ message: 'User not found' });
-            }
-
-            // Update user with the new image path
-            const updatedUser = await User.update(userId, { profile_image: imagePath });
-            res.status(200).json({
-                message: 'Image uploaded successfully',
-                data: updatedUser,
-            });
-        } catch (error) {
-            res.status(500).json({ message: 'Server error', error: error.message });
-        }
-    }
 }
 
 export default AutenticationController;

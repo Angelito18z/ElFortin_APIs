@@ -1,5 +1,5 @@
 import express from 'express';
-import uploadImage from '../../middlewares/uploadMiddleware.js'
+
 import AutenticationController from '../../controladores/usuarios/authenticationController.js';
 import {login} from '../../controladores/usuarios/authController.js';
 const router = express.Router();
@@ -31,33 +31,26 @@ router.get('/usuarios/descargarExcel', AutenticationController.descargarUsuarios
 /**
  * @swagger
  * /login:
- *   get:
- *     summary: Get a user by credentials
+ *   post:
+ *     summary: Authenticate a user
  *     tags: [Users]
- *     parameters:
- *       - in: query
- *         name: username
- *         schema:
- *           type: string
- *         required: true
- *         description: The username of the user
- *       - in: query
- *         name: password
- *         schema:
- *           type: string
- *         required: true
- *         description: The password of the user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
  *     responses:
  *       200:
- *         description: User details if credentials are correct
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/User'
+ *         description: Login successful, returns user token
  *       401:
- *         description: Invalid credentials
+ *         description: Unauthorized, invalid credentials
  */
-//router.get('/login', AutenticationController.getUserByCredencials); // Get a user by credentials
 
 router.post('/login', login); // Log in
 /**
@@ -102,7 +95,6 @@ router.get('/usuarios', AutenticationController.getAllUsers); // Get all users
  *         description: User not found
  */
 router.get('/usuarios/:id', AutenticationController.getUserById); // Get a user by ID
-router.post('/users/:id/upload', uploadImage.single('image'), AutenticationController.uploadUserImage);
 
 /**
  * @swagger
