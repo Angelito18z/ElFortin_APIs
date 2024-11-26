@@ -35,11 +35,10 @@ describe('Pruebas de la API proveedores', () => {
             const res = await request(app).get('/api/ventas/9999'); // ID que no existe
             expect(res.status).to.equal(404);
         });
-        it('Cada venta devuelta tiene los campos correctos', () => {
+        it('Cada proveedor devuelto tiene los campos correctos', () => {
             expect( getAll[0]).to.have.property('id');
-            expect( getAll[0]).to.have.property('restaurant_id');
-            expect( getAll[0]).to.have.property('report_date');
-            expect( getAll[0]).to.have.property('total_sales');
+            expect( getAll[0]).to.have.property('name');
+            expect( getAll[0]).to.have.property('contact_info');
             expect( getAll[0]).to.have.property('created_at');
             expect( getAll[0]).to.have.property('updated_at');
             expect( getAll[0]).to.have.property('deleted_at');
