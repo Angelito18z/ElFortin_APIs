@@ -35,11 +35,15 @@ describe('Pruebas de la API promociones', () => {
             const res = await request(app).get('/api/ventas/9999'); // ID que no existe
             expect(res.status).to.equal(404);
         });
-        it('Cada venta devuelta tiene los campos correctos', () => {
+        it('Cada promoción devuelta tiene los campos correctos', () => {
             expect( getAll[0]).to.have.property('id');
-            expect( getAll[0]).to.have.property('restaurant_id');
-            expect( getAll[0]).to.have.property('report_date');
-            expect( getAll[0]).to.have.property('total_sales');
+            expect( getAll[0]).to.have.property('code');
+            expect( getAll[0]).to.have.property('description');
+            expect( getAll[0]).to.have.property('discount_type');
+            expect( getAll[0]).to.have.property('value');
+            expect( getAll[0]).to.have.property('start_date');
+            expect( getAll[0]).to.have.property('end_date');
+            expect( getAll[0]).to.have.property('active');
             expect( getAll[0]).to.have.property('created_at');
             expect( getAll[0]).to.have.property('updated_at');
             expect( getAll[0]).to.have.property('deleted_at');
