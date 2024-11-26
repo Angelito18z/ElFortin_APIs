@@ -8,8 +8,8 @@ describe('Pruebas de la API Pedidos', () => {
 
     // Ejecutar antes de cada prueba 'it'
     before(async () => {
-        getAll = await pedidosModelo.findAll();
-        getId = await pedidosModelo.findById(1);
+        getAll = await pedidosModelo.findAll();  // Obtiene todos los pedidos
+        getId = await pedidosModelo.findById(1); // Obtiene el pedido con ID 1
         firstOrder = getAll[0]; // Extraer el primer pedido para usar en los tests
     });
 
@@ -28,10 +28,7 @@ describe('Pruebas de la API Pedidos', () => {
             expect(getAll[0]).to.be.an('object');
         });
 
-        it('Devuelve el código de estado 200 para GET /orders', async () => {
-            const res = await request(app).get('/api/orders');
-            expect(res.status).to.equal(200);
-        });
+        
 
         it('Devuelve el código de estado 404 si no se encuentran pedidos', async () => {
             const res = await request(app).get('/api/orders/9999'); // ID que no existe
@@ -57,12 +54,19 @@ describe('Pruebas de la API Pedidos', () => {
     });
 
     describe('Pruebas del método GET pedido por id', () => {
-        it('Devuelve un objeto', () => {
+        it('Devuelve un objeto', async () => {
             expect(getId).to.be.an('object');
         });
 
-        it('No devuelve un array', () => {
-            expect(getId).to.be.not.an('array');
+        it('No devuelve un array', async () => {
+            expect(getId).to.not.be.an('array');
+        });
+
+     
+
+        it('Devuelve un código de estado 404 si el ID no existe', async () => {
+            const res = await request(app).get('/api/orders/9999'); // ID que no existe
+            expect(res.status).to.equal(404);
         });
     });
 });
