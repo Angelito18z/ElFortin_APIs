@@ -30,7 +30,10 @@ create table discounts (
   value numeric(5, 2) not null,
   start_date date,
   end_date date,
-  active boolean default true
+  activate boolean default true,
+  created_at timestamp with time zone default now(),
+  updated_at timestamp with time zone default now(),
+  deleted_at timestamp with time zone
 );
 
 create table restaurants (
@@ -637,3 +640,46 @@ INSERT INTO order_items (order_id, menu_item_id, quantity, item_cost) VALUES
 (1, 1, 2, 30.00),
 (1, 2, 1, 50.00);
 
+-- Descuento porcentual del 10% válido por tiempo limitado
+INSERT INTO discounts (code, description, discount_type, value, start_date, end_date)
+VALUES ('SUMMER10', '10% de descuento en productos de verano', 'percentage', 10.00, '2024-06-01', '2024-08-31');
+
+-- Descuento fijo de $15 sin límite de tiempo
+INSERT INTO discounts (code, description, discount_type, value, active)
+VALUES ('FLAT15', 'Descuento fijo de $15 en compras mayores a $100', 'fixed', 15.00, true);
+
+-- Descuento porcentual del 25% para clientes nuevos con límite de tiempo
+INSERT INTO discounts (code, description, discount_type, value, start_date, end_date)
+VALUES ('NEW25', '25% de descuento para nuevos clientes', 'percentage', 25.00, '2024-01-01', '2024-03-31');
+
+-- Descuento fijo de $50 para compras navideñas, expirado
+INSERT INTO discounts (code, description, discount_type, value, start_date, end_date, active)
+VALUES ('XMAS50', 'Descuento especial navideño de $50', 'fixed', 50.00, '2023-12-01', '2023-12-31', false);
+
+-- Descuento porcentual del 5% válido todo el año
+INSERT INTO discounts (code, description, discount_type, value)
+VALUES ('YEAR5', '5% de descuento en todas las compras del año', 'percentage', 5.00);
+
+INSERT INTO suppliers (name, contact_info) 
+VALUES 
+('Proveedor Central', 'Tel: +52 55 1234 5678, Email: contacto@central.com');
+
+INSERT INTO suppliers (name, contact_info) 
+VALUES 
+('Distribuidora del Norte', 'Tel: +52 81 9876 5432, Email: ventas@norte.com');
+
+INSERT INTO suppliers (name, contact_info) 
+VALUES 
+('Importaciones Globales', 'Tel: +1 415 555 1234, Email: global@import.com');
+
+INSERT INTO suppliers (name, contact_info) 
+VALUES 
+('Suministros Locales', 'Tel: +52 33 8765 4321, Email: info@local.com');
+
+INSERT INTO suppliers (name, contact_info) 
+VALUES 
+('Proveedor Express', 'Tel: +52 999 888 7766, Email: contacto@express.com');
+
+INSERT INTO suppliers (name) 
+VALUES 
+('Proveedor Anónimo'); -- Sin contacto
