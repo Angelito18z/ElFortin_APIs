@@ -101,7 +101,7 @@ class User {
             `
         SELECT 
             id, name, email, phone, user_type, nickname, 
-            PGP_SYM_DECRYPT(encrypted_password::bytea, 'AES_KEY') AS decrypted_password
+            PGP_SYM_DECRYPT(password::bytea, 'AES_KEY') AS decrypted_password
         FROM users 
         WHERE LOWER(email) = LOWER($1) OR LOWER(nickname) = LOWER($1)
         `,
