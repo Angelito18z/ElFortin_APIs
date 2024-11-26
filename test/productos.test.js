@@ -38,8 +38,13 @@ describe('Pruebas de la API productos', () => {
         it('Cada producto devuelta tiene los campos correctos', () => {
             expect( getAll[0]).to.have.property('id');
             expect( getAll[0]).to.have.property('restaurant_id');
-            expect( getAll[0]).to.have.property('report_date');
-            expect( getAll[0]).to.have.property('total_sales');
+            expect( getAll[0]).to.have.property('name');
+            expect( getAll[0]).to.have.property('description');
+            expect( getAll[0]).to.have.property('price');
+            expect( getAll[0]).to.have.property('image_url');
+            expect( getAll[0]).to.have.property('category_name');
+            expect( getAll[0]).to.have.property('pre_tax_cost');
+            expect( getAll[0]).to.have.property('post_tax_cost');
             expect( getAll[0]).to.have.property('created_at');
             expect( getAll[0]).to.have.property('updated_at');
             expect( getAll[0]).to.have.property('deleted_at');
