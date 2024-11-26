@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import pool from '../../config/db.js';
+import { uploadToCloudinary } from '../../config/cloudinary.js';
 
 class User {
 
@@ -13,32 +14,43 @@ class User {
         return result.rows[0];
     }
 
-    static async create(data) {
-        const { name, email, phone, user_type, nickname, password,image_url } = data;
-
+    static async create(data, filePath) {
+        const { name, email, phone, user_type, nickname, password } = data;
+        
         // Hash the password before storing
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
-
+        
+        // Upload image to Cloudinary if a filePath is provided
+        let imageUrl = null;
+        if (filePath) {
+            imageUrl = await uploadToCloudinary(filePath);
+        }
+        
         const result = await pool.query(
             'INSERT INTO users (name, email, phone, user_type, nickname, encrypted_password, image_url) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
-            [name, email, phone, user_type, nickname, hashedPassword,image_url]
+            [name, email, phone, user_type, nickname, hashedPassword, imageUrl]
         );
-
+        console.log(result.rows[0]);  // Log the response to check what was inserted
         return result.rows[0];
     }
 
-    static async update(id, data) {
-        const { name, email, phone, user_type, nickname, password, image_url } = data;
-
+    static async update(id, data, filePath) {
+        const { name, email, phone, user_type, nickname, password } = data;
+    
         let hashedPassword = null;
-
         if (password) {
             // Hash the new password if provided
             const saltRounds = 10;
             hashedPassword = await bcrypt.hash(password, saltRounds);
         }
-
+    
+        // Upload new image to Cloudinary if a filePath is provided
+        let imageUrl = null;
+        if (filePath) {
+            imageUrl = await uploadToCloudinary(filePath);
+        }
+    
         const result = await pool.query(
             `
             UPDATE users
@@ -48,14 +60,14 @@ class User {
                 phone = $3,
                 user_type = $4,
                 nickname = $5,
-                encrypted_password = COALESCE($6, encrypted_password) -- Update password only if provided,
-                image_url = $7
+                encrypted_password = COALESCE($6, encrypted_password),
+                image_url = COALESCE($7, image_url) -- Update image URL only if provided
             WHERE id = $8
             RETURNING *
             `,
-            [name, email, phone, user_type, nickname, hashedPassword, image_url, id]
+            [name, email, phone, user_type, nickname, hashedPassword, imageUrl, id]
         );
-
+    
         return result.rows[0];
     }
 

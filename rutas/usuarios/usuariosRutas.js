@@ -1,5 +1,5 @@
 import express from 'express';
-
+import upload from '../../config/multer.js'; // Adjust the path based on your folder structure
 import AutenticationController from '../../controladores/usuarios/authenticationController.js';
 import {login} from '../../controladores/usuarios/authController.js';
 const router = express.Router();
@@ -112,7 +112,7 @@ router.get('/usuarios/:id', AutenticationController.getUserById); // Get a user 
  *       201:
  *         description: User created successfully
  */
-router.post('/usuarios', AutenticationController.createUser); // Create a new user
+router.post('/usuarios', upload.single('image'), AutenticationController.createUser); // Create a new user
 
 /**
  * @swagger
@@ -139,7 +139,7 @@ router.post('/usuarios', AutenticationController.createUser); // Create a new us
  *       404:
  *         description: User not found
  */
-router.put('/usuarios/:id', AutenticationController.updateUser); // Update user by ID
+router.put('/usuarios/:id', upload.single('image'), AutenticationController.updateUser); // Update user by ID
 
 /**
  * @swagger
