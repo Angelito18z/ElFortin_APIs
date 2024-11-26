@@ -9,7 +9,7 @@ SELECT
     mi.name,
     mi.description,
     mi.price,
-    image_url,
+    mi.image_url,
     c.name as category_name,
     mi.pre_tax_cost,
     mi.post_tax_cost,
