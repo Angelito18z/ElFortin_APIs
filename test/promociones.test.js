@@ -27,12 +27,12 @@ describe('Pruebas de la API promociones', () => {
             expect( getAll[0]).to.be.an('object');
         });
 
-        it('Devuelve el código de estado 200 para GET /ventas', async () => {
-            const res = await request(app).get('/api/ventas');
+        it('Devuelve el código de estado 200 para GET /promociones', async () => {
+            const res = await request(app).get('/api/promociones');
             expect(res.status).to.equal(200);
         });
-        it('Devuelve el código de estado 404 si no se encuentran ventas', async () => {
-            const res = await request(app).get('/api/ventas/9999'); // ID que no existe
+        it('Devuelve el código de estado 404 si no se encuentran promociones', async () => {
+            const res = await request(app).get('/api/promociones/9999'); // ID que no existe
             expect(res.status).to.equal(404);
         });
         it('Cada promoción devuelta tiene los campos correctos', () => {
@@ -51,7 +51,7 @@ describe('Pruebas de la API promociones', () => {
     
     });
 
-    describe('Pruebas del metodo GET venta por id', () => {
+    describe('Pruebas del metodo GET promocion por id', () => {
 
         it('Devuelve un objeto',  () => {
             expect(getId).to.be.an('object');
