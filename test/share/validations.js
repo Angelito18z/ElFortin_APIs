@@ -1,6 +1,6 @@
 class Validator {
     static hasUnsafeCharacters(input) {
-        const regex = /['"\\;\-]/;
+        const regex = /['"\\;\-@]/;
         return regex.test(input);
     }
 
@@ -34,11 +34,21 @@ class Validator {
     }
 
     static validateDate(date) {
-        if (typeof date !== 'string' || this.hasUnsafeCharacters(date)) return false;
+
+        // Declarar la función interna
+        function hasUnsafeCharactersDate(input) {
+            const regex = /['"\\;\@]/;
+            return regex.test(input);
+        }
+    
+        // Validar la fecha y los caracteres no seguros
+        if (typeof date !== 'string' || hasUnsafeCharactersDate(date)) return false;
+    
         const regex = /^\d{4}-\d{2}-\d{2}$/;
         return regex.test(date) && !isNaN(new Date(date).getTime());
     }
-
+    
+    
     static validateTimestamp(timestamp) {
         return typeof timestamp === 'string' && !this.hasUnsafeCharacters(timestamp) && !isNaN(Date.parse(timestamp));
     }
@@ -61,20 +71,26 @@ class Validator {
     }
 
     static validateEmail(email) {
-        if (typeof email !== 'string' || this.hasUnsafeCharacters(email)) return false;
-        const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-        return regex.test(email);
+        if (typeof email !== 'string') return false; // Verifica que sea una cadena
+        const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/; // Patrón para correos válidos
+        return regex.test(email); // Verifica el formato del correo
     }
+    
 
     static validatePhone(phone) {
         if (phone && (typeof phone !== 'string' || this.hasUnsafeCharacters(phone))) return false;
-        const regex = /^[0-9]{7,15}$/;
+        const regex = /^[0-9]{10}$/;
         return !phone || regex.test(phone);
     }
 
     static validatePassword(password) {
-        return typeof password === 'string' && !this.hasUnsafeCharacters(password) && /^(?=.*[A-Za-z])(?=.*\d)[A-Za Zahn\d@!#$%^&*()_+=-]{8,}$/.test(password);
+        return typeof password === 'string' &&
+            password.length >= 8 && // Mínimo 8 caracteres
+            /[A-Za-z]/.test(password) && // Al menos una letra
+            /\d/.test(password) && // Al menos un número
+            /[!@#$%^&*(),.?":{}|<>]/.test(password); // Al menos un carácter especial
     }
+    
 
     static validateTime(time) {
         return typeof time === 'string' && !this.hasUnsafeCharacters(time) && /^([0-1]\d|2[0-3]):([0-5]\d)$/.test(time);
@@ -85,6 +101,10 @@ class Validator {
     }
 
     static validateInteger(value) {
+        if(value<0){
+            return false;
+        }
+
         return Number.isInteger(value);
     }
 
