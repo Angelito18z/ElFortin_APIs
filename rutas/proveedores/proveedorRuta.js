@@ -12,45 +12,54 @@ const router = express.Router();
 
 /**
  * @swagger
- * /proveedores/buscar/{q}:
- *   get:
- *     summary: Search providers by query
- *     tags: [Providers]
- *     parameters:
- *       - in: path
- *         name: q
- *         schema:
+ * components:
+ *   schemas:
+ *     Supplier:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: Unique identifier of the supplier
+ *         name:
  *           type: string
- *         required: true
- *         description: Search query for provider names or descriptions
+ *           description: Name of the supplier
+ *         contact_info:
+ *           type: string
+ *           description: Contact information of the supplier
+ *         created_at:
+ *           type: string
+ *           format: date-time
+ *           description: Supplier creation date
+ *     SupplierInput:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *           description: Name of the supplier
+ *         contact_info:
+ *           type: string
+ *           description: Contact information of the supplier
+ */
+
+/**
+ * @swagger
+ * /proveedores:
+ *   get:
+ *     summary: Get all providers
+ *     tags: [Providers]
  *     responses:
  *       200:
- *         description: List of providers matching the search query
+ *         description: List of all providers
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Supplier'
+ *       500:
+ *         description: Server error
  */
-router.get('/proveedores/buscar/:q', ProveedorControlador.buscarProveedoresFiltro); // Search providers by query
-
-/**
- * @swagger
- * /proveedores/descargarExcel:
- *   get:
- *     summary: Download providers in Excel format
- *     tags: [Providers]
- *     responses:
- *       200:
- *         description: Excel file with provider information
- *         content:
- *           application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
- *             schema:
- *               type: string
- *               format: binary
- */
-router.get('/proveedores/descargarExcel', ProveedorControlador.descargarProveedoresExcel); // Download providers in Excel format
+router.get('/proveedores', ProveedorControlador.obtenerProveedores);
 
 /**
  * @swagger
@@ -74,26 +83,10 @@ router.get('/proveedores/descargarExcel', ProveedorControlador.descargarProveedo
  *               $ref: '#/components/schemas/Supplier'
  *       404:
  *         description: Supplier not found
+ *       500:
+ *         description: Server error
  */
-router.get('/proveedores/:id', ProveedorControlador.obtenerProveedorPorId); // Get provider by ID
-
-/**
- * @swagger
- * /proveedores:
- *   get:
- *     summary: Get all providers
- *     tags: [Providers]
- *     responses:
- *       200:
- *         description: List of all providers
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Supplier'
- */
-router.get('/proveedores', ProveedorControlador.obtenerProveedores); // Get all providers
+router.get('/proveedores/:id', ProveedorControlador.obtenerProveedorPorId);
 
 /**
  * @swagger
@@ -106,12 +99,14 @@ router.get('/proveedores', ProveedorControlador.obtenerProveedores); // Get all 
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Supplier'
+ *             $ref: '#/components/schemas/SupplierInput'
  *     responses:
  *       201:
  *         description: Supplier created successfully
+ *       500:
+ *         description: Server error
  */
-router.post('/proveedores', ProveedorControlador.crearProveedor); // Create a new provider
+router.post('/proveedores', ProveedorControlador.crearProveedor);
 
 /**
  * @swagger
@@ -131,14 +126,16 @@ router.post('/proveedores', ProveedorControlador.crearProveedor); // Create a ne
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Supplier'
+ *             $ref: '#/components/schemas/SupplierInput'
  *     responses:
  *       200:
  *         description: Supplier updated successfully
  *       404:
  *         description: Supplier not found
+ *       500:
+ *         description: Server error
  */
-router.put('/proveedores/:id', ProveedorControlador.actualizarProveedor); // Update provider by ID
+router.put('/proveedores/:id', ProveedorControlador.actualizarProveedor);
 
 /**
  * @swagger
@@ -158,7 +155,57 @@ router.put('/proveedores/:id', ProveedorControlador.actualizarProveedor); // Upd
  *         description: Supplier deleted successfully
  *       404:
  *         description: Supplier not found
+ *       500:
+ *         description: Server error
  */
-router.delete('/proveedores/:id', ProveedorControlador.borrarProveedor); // Delete provider by ID
+router.delete('/proveedores/:id', ProveedorControlador.borrarProveedor);
+
+/**
+ * @swagger
+ * /proveedores/buscar/{q}:
+ *   get:
+ *     summary: Search providers by query
+ *     tags: [Providers]
+ *     parameters:
+ *       - in: path
+ *         name: q
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Search query for provider names or descriptions
+ *     responses:
+ *       200:
+ *         description: List of providers matching the search query
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Supplier'
+ *       404:
+ *         description: No matches found
+ *       500:
+ *         description: Server error
+ */
+router.get('/proveedores/buscar/:q', ProveedorControlador.buscarProveedoresFiltro);
+
+/**
+ * @swagger
+ * /proveedores/descargarExcel:
+ *   get:
+ *     summary: Download providers in Excel format
+ *     tags: [Providers]
+ *     responses:
+ *       200:
+ *         description: Excel file with provider information
+ *         content:
+ *           application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *       500:
+ *         description: Server error
+ */
+router.get('/proveedores/descargarExcel', ProveedorControlador.descargarProveedoresExcel);
 
 export default router;

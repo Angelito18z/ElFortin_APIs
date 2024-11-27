@@ -14,7 +14,7 @@ const router = express.Router();
  * @swagger
  * /orders:
  *   get:
- *     summary: Get all orders
+ *     summary: Retrieve all orders
  *     tags: [Orders]
  *     responses:
  *       200:
@@ -25,6 +25,8 @@ const router = express.Router();
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Order'
+ *       500:
+ *         description: Internal server error
  */
 router.get('/orders', orderController.getAllOrders); // Get all orders
 
@@ -43,6 +45,8 @@ router.get('/orders', orderController.getAllOrders); // Get all orders
  *     responses:
  *       201:
  *         description: Order created successfully
+ *       500:
+ *         description: Internal server error
  */
 router.post('/orders', orderController.createOrder); // Create a new order
 
@@ -50,7 +54,7 @@ router.post('/orders', orderController.createOrder); // Create a new order
  * @swagger
  * /orders/search:
  *   get:
- *     summary: Search orders
+ *     summary: Search for orders
  *     tags: [Orders]
  *     parameters:
  *       - in: query
@@ -58,7 +62,7 @@ router.post('/orders', orderController.createOrder); // Create a new order
  *         schema:
  *           type: string
  *         required: true
- *         description: Search query
+ *         description: Search query for orders
  *     responses:
  *       200:
  *         description: List of orders matching the search query
@@ -68,6 +72,10 @@ router.post('/orders', orderController.createOrder); // Create a new order
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Order'
+ *       400:
+ *         description: Query parameter 'q' is required
+ *       500:
+ *         description: Internal server error
  */
 router.get('/orders/search', orderController.searchAllColumns); // Search orders
 
@@ -75,16 +83,18 @@ router.get('/orders/search', orderController.searchAllColumns); // Search orders
  * @swagger
  * /orders/excel:
  *   get:
- *     summary: Download orders in Excel format
+ *     summary: Download all orders in Excel format
  *     tags: [Orders]
  *     responses:
  *       200:
- *         description: Excel file with orders
+ *         description: Excel file containing all orders
  *         content:
  *           application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
  *             schema:
  *               type: string
  *               format: binary
+ *       500:
+ *         description: Internal server error
  */
 router.get('/orders/excel', orderController.downloadOrdersExcel); // Download orders in Excel format
 
@@ -92,7 +102,7 @@ router.get('/orders/excel', orderController.downloadOrdersExcel); // Download or
  * @swagger
  * /orders/{id}:
  *   get:
- *     summary: Get an order by ID
+ *     summary: Retrieve an order by ID
  *     tags: [Orders]
  *     parameters:
  *       - in: path
@@ -100,16 +110,18 @@ router.get('/orders/excel', orderController.downloadOrdersExcel); // Download or
  *         schema:
  *           type: string
  *         required: true
- *         description: Order ID
+ *         description: ID of the order to retrieve
  *     responses:
  *       200:
- *         description: Order details
+ *         description: Order details retrieved successfully
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Order'
  *       404:
  *         description: Order not found
+ *       500:
+ *         description: Internal server error
  */
 router.get('/orders/:id', orderController.getOrderById); // Get an order by ID
 
@@ -117,7 +129,7 @@ router.get('/orders/:id', orderController.getOrderById); // Get an order by ID
  * @swagger
  * /orders/{id}:
  *   put:
- *     summary: Update an order by ID
+ *     summary: Update an existing order by ID
  *     tags: [Orders]
  *     parameters:
  *       - in: path
@@ -125,7 +137,7 @@ router.get('/orders/:id', orderController.getOrderById); // Get an order by ID
  *         schema:
  *           type: string
  *         required: true
- *         description: Order ID
+ *         description: ID of the order to update
  *     requestBody:
  *       required: true
  *       content:
@@ -137,6 +149,8 @@ router.get('/orders/:id', orderController.getOrderById); // Get an order by ID
  *         description: Order updated successfully
  *       404:
  *         description: Order not found
+ *       500:
+ *         description: Internal server error
  */
 router.put('/orders/:id', orderController.updateOrder); // Update an order by ID
 
@@ -152,12 +166,14 @@ router.put('/orders/:id', orderController.updateOrder); // Update an order by ID
  *         schema:
  *           type: string
  *         required: true
- *         description: Order ID
+ *         description: ID of the order to delete
  *     responses:
  *       200:
  *         description: Order deleted successfully
  *       404:
  *         description: Order not found
+ *       500:
+ *         description: Internal server error
  */
 router.delete('/orders/:id', orderController.deleteOrder); // Delete an order by ID
 

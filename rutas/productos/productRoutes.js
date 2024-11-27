@@ -1,6 +1,5 @@
 import express from "express";
 import upload from '../../config/multer.js'; // Adjust the path based on your folder structure
-
 import ProductController from "../../controladores/productos/productController.js"; // Update to reference the correct controller
 const router = express.Router();
 
@@ -9,6 +8,60 @@ const router = express.Router();
  * tags:
  *   name: Products
  *   description: API for managing products
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Product:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: Unique identifier of the product
+ *         name:
+ *           type: string
+ *           description: Name of the product
+ *         description:
+ *           type: string
+ *           description: Detailed description of the product
+ *         price:
+ *           type: number
+ *           format: float
+ *           description: Price of the product
+ *         category_name:
+ *           type: string
+ *           description: Name of the product's category
+ *         pre_tax_cost:
+ *           type: number
+ *           format: float
+ *           description: Cost of the product before tax
+ *         post_tax_cost:
+ *           type: number
+ *           format: float
+ *           description: Cost of the product after tax
+ *     ProductInput:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *         description:
+ *           type: string
+ *         price:
+ *           type: number
+ *           format: float
+ *         category_name:
+ *           type: string
+ *         pre_tax_cost:
+ *           type: number
+ *           format: float
+ *         post_tax_cost:
+ *           type: number
+ *           format: float
+ *         image:
+ *           type: string
+ *           format: binary
  */
 
 /**
@@ -63,14 +116,16 @@ router.get('/products/:id', ProductController.getProductById); // Get a product 
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/Product'
+ *             $ref: '#/components/schemas/ProductInput'
  *     responses:
  *       201:
  *         description: Product created successfully
+ *       500:
+ *         description: Server error
  */
-router.post('/products', upload.single('image'),ProductController.createProduct); // Create a new product
+router.post('/products', upload.single('image'), ProductController.createProduct); // Create a new product
 
 /**
  * @swagger
@@ -88,14 +143,16 @@ router.post('/products', upload.single('image'),ProductController.createProduct)
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/Product'
+ *             $ref: '#/components/schemas/ProductInput'
  *     responses:
  *       200:
  *         description: Product updated successfully
  *       404:
  *         description: Product not found
+ *       500:
+ *         description: Server error
  */
 router.put('/products/:id', upload.single('image'), ProductController.updateProduct); // Update a product by ID
 
@@ -117,6 +174,8 @@ router.put('/products/:id', upload.single('image'), ProductController.updateProd
  *         description: Product deleted successfully
  *       404:
  *         description: Product not found
+ *       500:
+ *         description: Server error
  */
 router.delete('/products/:id', ProductController.deleteProduct); // Delete a product by ID
 
@@ -142,6 +201,10 @@ router.delete('/products/:id', ProductController.deleteProduct); // Delete a pro
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Product'
+ *       400:
+ *         description: Invalid query parameter
+ *       500:
+ *         description: Server error
  */
 router.get('/products/search/:q', ProductController.searchAllColumns); // Search products by query
 
@@ -159,6 +222,8 @@ router.get('/products/search/:q', ProductController.searchAllColumns); // Search
  *             schema:
  *               type: string
  *               format: binary
+ *       500:
+ *         description: Server error
  */
 router.get('/products/download/excel', ProductController.downloadExcel); // Download products in Excel format
 
