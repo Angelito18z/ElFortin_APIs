@@ -106,6 +106,39 @@ class Order {
         const result = await pool.query(query);
         return result.rows;
     };
+
+    // Get orders by customer ID
+    static async getOrdersByCustomerId(customerId) {
+        const result = await pool.query(`
+            SELECT 
+                o.id AS order_id,
+                o.table_number,
+                o.order_date,
+                o.total_amount,
+                COALESCE(o.pre_tax_total, 0) AS pre_tax_total,
+                COALESCE(o.post_tax_total, 0) AS post_tax_total,
+                COALESCE(pm.name, 'None') AS payment_method,
+                COALESCE(d.description, 'No discount') AS discount_description,
+                COALESCE(d.discount_type, 'None') AS discount_type,
+                COALESCE(d.value, 0) AS discount_value,
+                COALESCE(os.name, 'Pending') AS status,
+                o.order_type,
+                oi.quantity,
+                COALESCE(mi.name, 'Unknown item') AS item_name,
+                COALESCE(oi.item_cost, 0) AS item_cost
+            FROM orders o
+            LEFT JOIN payment_methods pm ON o.payment_method_id = pm.id
+            LEFT JOIN discounts d ON o.discount_id = d.id
+            LEFT JOIN order_statuses os ON o.status_id = os.id
+            INNER JOIN order_items oi ON o.id = oi.order_id
+            LEFT JOIN menu_items mi ON oi.menu_item_id = mi.id
+            WHERE o.client_id = $1
+              AND o.deleted_at IS NULL
+              AND oi.deleted_at IS NULL
+              AND mi.deleted_at IS NULL
+        `, [customerId]);
+        return result.rows;
+    }
 }
 
 export default Order;

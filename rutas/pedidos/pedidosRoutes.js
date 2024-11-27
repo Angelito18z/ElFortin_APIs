@@ -1,7 +1,104 @@
 import express from 'express';
-import orderController from '../../controladores/pedidos/pedidosController.js'; // Update to reference the correct controller
+import OrderController from '../../controladores/pedidos/pedidosController.js'; // Update to reference the correct controller
 
 const router = express.Router();
+/**
+ * @swagger
+ * /api/customers/{customerId}/orders:
+ *   get:
+ *     summary: Retrieve all orders for a specific customer.
+ *     description: Fetches all orders associated with a customer by their ID, including detailed information about payment methods, discounts, and order items.
+ *     tags:
+ *       - Orders
+ *     parameters:
+ *       - in: path
+ *         name: customerId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the customer.
+ *     responses:
+ *       200:
+ *         description: A list of orders for the customer.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       order_id:
+ *                         type: integer
+ *                         example: 1
+ *                       table_number:
+ *                         type: integer
+ *                         example: 5
+ *                       order_date:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2024-11-27T10:00:00Z
+ *                       total_amount:
+ *                         type: number
+ *                         format: float
+ *                         example: 45.50
+ *                       payment_method:
+ *                         type: string
+ *                         example: Credit Card
+ *                       discount_description:
+ *                         type: string
+ *                         example: Black Friday Discount
+ *                       discount_value:
+ *                         type: number
+ *                         format: float
+ *                         example: 10.00
+ *                       status:
+ *                         type: string
+ *                         example: Completed
+ *                       item_name:
+ *                         type: string
+ *                         example: Spaghetti
+ *                       quantity:
+ *                         type: integer
+ *                         example: 2
+ *                       item_cost:
+ *                         type: number
+ *                         format: float
+ *                         example: 12.99
+ *       404:
+ *         description: No orders found for this customer.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: No orders found for this customer.
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: Error fetching orders.
+ */
+
+router.get('/orders/customer/:customerId', OrderController.getOrdersByCustomerId);
 
 /**
  * @swagger
@@ -28,7 +125,7 @@ const router = express.Router();
  *       500:
  *         description: Internal server error
  */
-router.get('/orders', orderController.getAllOrders); // Get all orders
+router.get('/orders', OrderController.getAllOrders); // Get all orders
 
 /**
  * @swagger
@@ -48,7 +145,7 @@ router.get('/orders', orderController.getAllOrders); // Get all orders
  *       500:
  *         description: Internal server error
  */
-router.post('/orders', orderController.createOrder); // Create a new order
+router.post('/orders', OrderController.createOrder); // Create a new order
 
 /**
  * @swagger
@@ -77,7 +174,7 @@ router.post('/orders', orderController.createOrder); // Create a new order
  *       500:
  *         description: Internal server error
  */
-router.get('/orders/search', orderController.searchAllColumns); // Search orders
+router.get('/orders/search', OrderController.searchAllColumns); // Search orders
 
 /**
  * @swagger
@@ -96,7 +193,7 @@ router.get('/orders/search', orderController.searchAllColumns); // Search orders
  *       500:
  *         description: Internal server error
  */
-router.get('/orders/excel', orderController.downloadOrdersExcel); // Download orders in Excel format
+router.get('/orders/excel', OrderController.downloadOrdersExcel); // Download orders in Excel format
 
 /**
  * @swagger
@@ -123,7 +220,7 @@ router.get('/orders/excel', orderController.downloadOrdersExcel); // Download or
  *       500:
  *         description: Internal server error
  */
-router.get('/orders/:id', orderController.getOrderById); // Get an order by ID
+router.get('/orders/:id', OrderController.getOrderById); // Get an order by ID
 
 /**
  * @swagger
@@ -152,7 +249,11 @@ router.get('/orders/:id', orderController.getOrderById); // Get an order by ID
  *       500:
  *         description: Internal server error
  */
-router.put('/orders/:id', orderController.updateOrder); // Update an order by ID
+router.put('/orders/:id', OrderController.updateOrder); // Update an order by ID
+
+
+
+
 
 /**
  * @swagger
@@ -175,6 +276,8 @@ router.put('/orders/:id', orderController.updateOrder); // Update an order by ID
  *       500:
  *         description: Internal server error
  */
-router.delete('/orders/:id', orderController.deleteOrder); // Delete an order by ID
+router.delete('/orders/:id', OrderController.deleteOrder); // Delete an order by ID
+
+
 
 export default router;
