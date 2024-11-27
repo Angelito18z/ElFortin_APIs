@@ -345,3 +345,108 @@ export const DetalleVentaSchema = {
   },
   required: ["order_id", "menu_item_id", "quantity"], // Required fields for an order item
 };
+export const PromotionSchema = {
+  type: "object",
+  properties: {
+    id: { 
+      type: "integer", 
+      description: "Unique ID of the promotion" 
+    },
+    code: { 
+      type: "string", 
+      description: "Promotion code (unique)" 
+    },
+    description: { 
+      type: "string", 
+      description: "Description of the promotion" 
+    },
+    discount_type: { 
+      type: "string", 
+      enum: ["percentage", "fixed"], 
+      description: "Type of the discount applied by the promotion (either 'percentage' or 'fixed')" 
+    },
+    value: { 
+      type: "number", 
+      format: "float", 
+      description: "Value of the promotion (percentage or fixed amount)" 
+    },
+    start_date: { 
+      type: "string", 
+      format: "date", 
+      description: "Start date of the promotion" 
+    },
+    end_date: { 
+      type: "string", 
+      format: "date", 
+      description: "End date of the promotion" 
+    },
+    active: { 
+      type: "boolean", 
+      description: "Whether the promotion is currently active" 
+    },
+    image_url: { 
+      type: "string", 
+      description: "URL of the promotion image (optional)", 
+      nullable: true 
+    },
+    created_at: { 
+      type: "string", 
+      format: "date-time", 
+      description: "Timestamp when the promotion was created" 
+    },
+    updated_at: { 
+      type: "string", 
+      format: "date-time", 
+      description: "Timestamp when the promotion was last updated" 
+    },
+    deleted_at: { 
+      type: "string", 
+      format: "date-time", 
+      nullable: true, 
+      description: "Timestamp when the promotion was deleted (nullable)" 
+    }
+  },
+  required: ["code", "discount_type", "value"], // Make sure these are mandatory fields
+};
+export const UserInputSchema = {
+  type: "object",
+  properties: {
+    name: {
+      type: "string",
+      description: "Full name of the user",
+      minLength: 1 // Ensuring the name is not empty
+    },
+    email: {
+      type: "string",
+      format: "email",
+      description: "Email address of the user (unique)",
+      minLength: 1 // Email is required
+    },
+    phone: {
+      type: "string",
+      description: "Phone number of the user",
+      nullable: true // Phone number is optional
+    },
+    user_type: {
+      type: "string",
+      enum: ["client", "worker"],
+      description: "Type of the user (either 'client' or 'worker')"
+    },
+    nickname: {
+      type: "string",
+      description: "Nickname of the user",
+      nullable: true // Nickname is optional
+    },
+    password: {
+      type: "string",
+      description: "Password for the user account (required for creation, optional for update)",
+      minLength: 6 // Password should have at least 6 characters
+    },
+    image: {
+      type: "string",
+      format: "binary",
+      description: "Profile image of the user (optional)"
+    }
+  },
+  required: ["name", "email", "user_type", "nickname", "password"] // These fields are mandatory for creation
+};

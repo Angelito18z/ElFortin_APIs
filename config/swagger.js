@@ -1,6 +1,6 @@
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import { DetalleVentaSchema, DiscountSchema, OrderSchema, ProductSchema, RestaurantSchema, SupplierSchema, UserSchema  } from './schemas.js';
+import { UserInputSchema, PromotionSchema, DetalleVentaSchema, DiscountSchema, OrderSchema, ProductSchema, RestaurantSchema, SupplierSchema, UserSchema  } from './schemas.js';
 import dotenv from 'dotenv';
 import User from '../modelos/usuarios/usuariosModel.js';
 dotenv.config(); // Cargar variables de entorno primero
@@ -36,6 +36,8 @@ const swaggerOptions = {
         Restaurant: RestaurantSchema,
         User: UserSchema,
         DetalleVenta: DetalleVentaSchema,
+        Promotion: PromotionSchema,
+        UserInput: UserInputSchema,
       },
     },
   },

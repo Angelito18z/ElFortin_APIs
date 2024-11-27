@@ -1,7 +1,8 @@
 import express from 'express';
 import upload from '../../config/multer.js'; // Adjust the path based on your folder structure
 import AutenticationController from '../../controladores/usuarios/authenticationController.js';
-import {login} from '../../controladores/usuarios/authController.js';
+import { login } from '../../controladores/usuarios/authController.js';
+
 const router = express.Router();
 
 /**
@@ -51,8 +52,8 @@ router.get('/usuarios/descargarExcel', AutenticationController.descargarUsuarios
  *       401:
  *         description: Unauthorized, invalid credentials
  */
-
 router.post('/login', login); // Log in
+
 /**
  * @swagger
  * /usuarios:
@@ -105,12 +106,16 @@ router.get('/usuarios/:id', AutenticationController.getUserById); // Get a user 
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/User'
+ *             $ref: '#/components/schemas/UserInput'
  *     responses:
  *       201:
  *         description: User created successfully
+ *       400:
+ *         description: Bad request, missing or invalid fields
+ *       500:
+ *         description: Server error
  */
 router.post('/usuarios', upload.single('image'), AutenticationController.createUser); // Create a new user
 
@@ -130,14 +135,16 @@ router.post('/usuarios', upload.single('image'), AutenticationController.createU
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/User'
+ *             $ref: '#/components/schemas/UserInput'
  *     responses:
  *       200:
  *         description: User updated successfully
  *       404:
  *         description: User not found
+ *       500:
+ *         description: Server error
  */
 router.put('/usuarios/:id', upload.single('image'), AutenticationController.updateUser); // Update user by ID
 
