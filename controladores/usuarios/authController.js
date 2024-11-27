@@ -14,14 +14,18 @@ export const login = async (req, res) => {
   try {
     // Use the method from the User class to fetch the user by email or username
     const user = await User.getUserByEmailOrUsername({ emailOrNickname });
-
+    console.log('Entered password:', password);
+    console.log('Stored hashed password:', user.decrypted_password);
     if (!user) {
       return res.status(404).json({ message: 'Usuario o correo no encontrado.' });
     }
 
     // Compare the provided password with the encrypted password from the database
     // Compara la contraseña desencriptada
-    if (user.decrypted_password !== password) {
+    const isPasswordValid = await bcrypt.compare(password, user.decrypted_password);
+
+    // If the password does not match, return an error
+    if (!isPasswordValid) {
       return res.status(401).json({ message: 'Credenciales inválidas.' });
     }
 
