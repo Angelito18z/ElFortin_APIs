@@ -1,15 +1,15 @@
 import { expect } from 'chai';
-import ventasModel from '../modelos/ventas/ventasModel.js';
+import restaurantesModelo from '../../modelos/restaurantes/restauranteModelo.js';
 import request from 'supertest'; // Importar supertest (libreria para hacer solicitudes HHTP)
-import { app, server } from '../index.js';
+import { app, server } from '../../index.js';
 
-describe('Pruebas de la API ventas', () => {
+describe('Pruebas de la API restaurantes', () => {
     let  getAll, getId;
     
     // Ejecutar antes de cada prueba 'it'
     before(async () => {
-         getAll = await ventasModel.obtenerTodo();
-        getId = await ventasModel.obtenerVentaId(1);
+         getAll = await restaurantesModelo.obtenerTodo();
+        getId = await restaurantesModelo.obtenerRestauranteId(1);
     });
 
       // Ejecutar después de todas las pruebas 
@@ -27,19 +27,19 @@ describe('Pruebas de la API ventas', () => {
             expect( getAll[0]).to.be.an('object');
         });
 
-        it('Devuelve el código de estado 200 para GET /ventas', async () => {
-            const res = await request(app).get('/api/ventas');
+        it('Devuelve el código de estado 200 para GET /restaurantes', async () => {
+            const res = await request(app).get('/api/restaurantes');
             expect(res.status).to.equal(200);
         });
-        it('Devuelve el código de estado 404 si no se encuentran ventas', async () => {
-            const res = await request(app).get('/api/ventas/9999'); // ID que no existe
+        it('Devuelve el código de estado 404 si no se encuentran restaurantes', async () => {
+            const res = await request(app).get('/api/restaurantes/9999'); // ID que no existe
             expect(res.status).to.equal(404);
         });
-        it('Cada venta devuelta tiene los campos correctos', () => {
+        it('Cada restaurante devuelto tiene los campos correctos', () => {
             expect( getAll[0]).to.have.property('id');
-            expect( getAll[0]).to.have.property('restaurant_id');
-            expect( getAll[0]).to.have.property('report_date');
-            expect( getAll[0]).to.have.property('total_sales');
+            expect( getAll[0]).to.have.property('name');
+            expect( getAll[0]).to.have.property('location');
+            expect( getAll[0]).to.have.property('opening_hours');
             expect( getAll[0]).to.have.property('created_at');
             expect( getAll[0]).to.have.property('updated_at');
             expect( getAll[0]).to.have.property('deleted_at');
@@ -47,7 +47,7 @@ describe('Pruebas de la API ventas', () => {
     
     });
 
-    describe('Pruebas del metodo GET venta por id', () => {
+    describe('Pruebas del metodo GET restaurante por id', () => {
 
         it('Devuelve un objeto',  () => {
             expect(getId).to.be.an('object');

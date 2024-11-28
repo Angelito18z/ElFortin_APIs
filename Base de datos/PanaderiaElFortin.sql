@@ -68,7 +68,7 @@ CREATE TABLE users (
     phone TEXT,
     image_url text,
     user_type TEXT CHECK (user_type IN ('client', 'worker')) NOT NULL,
-    nickname TEXT,
+    nickname TEXT UNIQUE,
     encrypted_password TEXT,  -- Store the hashed password
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT now(),

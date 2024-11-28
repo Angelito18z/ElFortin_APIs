@@ -1,7 +1,7 @@
 import { expect } from 'chai';
-import pedidosModelo from '../modelos/pedidos/pedidosModelo.js';
+import pedidosModelo from '../../modelos/pedidos/pedidosModelo.js';
 import request from 'supertest'; // Importar supertest (librería para hacer solicitudes HTTP)
-import { app, server } from '../index.js';
+import { app, server } from '../../index.js';
 
 describe('Pruebas de la API Pedidos', () => {
     let getAll, getId, firstOrder;

@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import Validator from './share/validations.js';
+import Validator from '../../share/validations.js';
 
 describe('Validation Functions', () => {
     describe('SQL Injection Prevention (hasUnsafeCharacters)', () => {

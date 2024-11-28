@@ -1,15 +1,15 @@
 import { expect } from 'chai';
-import promocionesModelo from '../modelos/promociones/promocionModelo.js';
+import productModel from '../../modelos/productos/productModel.js';
 import request from 'supertest'; // Importar supertest (libreria para hacer solicitudes HHTP)
-import { app, server } from '../index.js';
+import { app, server } from '../../index.js';
 
-describe('Pruebas de la API promociones', () => {
+describe('Pruebas de la API productos', () => {
     let  getAll, getId;
     
     // Ejecutar antes de cada prueba 'it'
     before(async () => {
-         getAll = await promocionesModelo.obtenerTodo();
-        getId = await promocionesModelo.obtenerPromocionId(1);
+         getAll = await productModel.findAll();
+        getId = await productModel.findById(1);
     });
 
       // Ejecutar después de todas las pruebas 
@@ -27,23 +27,24 @@ describe('Pruebas de la API promociones', () => {
             expect( getAll[0]).to.be.an('object');
         });
 
-        it('Devuelve el código de estado 200 para GET /promociones', async () => {
-            const res = await request(app).get('/api/promociones');
+        it('Devuelve el código de estado 200 para GET /products', async () => {
+            const res = await request(app).get('/api/products');
             expect(res.status).to.equal(200);
         });
-        it('Devuelve el código de estado 404 si no se encuentran promociones', async () => {
-            const res = await request(app).get('/api/promociones/9999'); // ID que no existe
+        it('Devuelve el código de estado 404 si no se encuentran productos', async () => {
+            const res = await request(app).get('/api/products/9999'); // ID que no existe
             expect(res.status).to.equal(404);
         });
-        it('Cada promoción devuelta tiene los campos correctos', () => {
+        it('Cada producto devuelta tiene los campos correctos', () => {
             expect( getAll[0]).to.have.property('id');
-            expect( getAll[0]).to.have.property('code');
+            expect( getAll[0]).to.have.property('restaurant_id');
+            expect( getAll[0]).to.have.property('name');
             expect( getAll[0]).to.have.property('description');
-            expect( getAll[0]).to.have.property('discount_type');
-            expect( getAll[0]).to.have.property('value');
-            expect( getAll[0]).to.have.property('start_date');
-            expect( getAll[0]).to.have.property('end_date');
-            expect( getAll[0]).to.have.property('active');
+            expect( getAll[0]).to.have.property('price');
+            expect( getAll[0]).to.have.property('image_url');
+            expect( getAll[0]).to.have.property('category_name');
+            expect( getAll[0]).to.have.property('pre_tax_cost');
+            expect( getAll[0]).to.have.property('post_tax_cost');
             expect( getAll[0]).to.have.property('created_at');
             expect( getAll[0]).to.have.property('updated_at');
             expect( getAll[0]).to.have.property('deleted_at');
@@ -51,7 +52,7 @@ describe('Pruebas de la API promociones', () => {
     
     });
 
-    describe('Pruebas del metodo GET promocion por id', () => {
+    describe('Pruebas del metodo GET producto por id', () => {
 
         it('Devuelve un objeto',  () => {
             expect(getId).to.be.an('object');
