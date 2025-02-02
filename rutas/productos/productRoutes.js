@@ -31,7 +31,7 @@ const router = express.Router();
  *           format: float
  *           description: Price of the product
  *         category_name:
- *           type: string
+ *           type: int
  *           description: Name of the product's category
  *         pre_tax_cost:
  *           type: number
@@ -52,7 +52,7 @@ const router = express.Router();
  *           type: number
  *           format: float
  *         category_name:
- *           type: string
+ *           type: int
  *         pre_tax_cost:
  *           type: number
  *           format: float

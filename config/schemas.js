@@ -62,7 +62,7 @@ export const ProductSchema = {
       description: "Price of the product",
     },
     category_name: {
-      type: "string",
+      type: "integer",
       description: "Category name of the product",
     },
     pre_tax_cost: {
