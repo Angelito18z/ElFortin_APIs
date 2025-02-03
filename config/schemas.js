@@ -450,3 +450,88 @@ export const UserInputSchema = {
   },
   required: ["name", "email", "user_type", "nickname", "password"] // These fields are mandatory for creation
 };
+export const ConfigInitSchema = {
+  type: "object",
+  properties: {
+    id: { 
+      type: "integer", 
+      description: "Unique ID of the configInit" 
+    },
+    name: { 
+      type: "string", 
+      description: "Name of the configInit" 
+    },
+    value: { 
+      type: "string", 
+      description: "Value of the configInit" 
+    },
+    description: { 
+      type: "string", 
+      description: "Description of the configInit" 
+    },
+    unit: { 
+      type: "string", 
+      description: "Unit of the configInit" 
+    },
+    created_at: { 
+      type: "string", 
+      format: "date-time", 
+      description: "Timestamp when the configInit was created" 
+    },
+    updated_at: { 
+      type: "string", 
+      format: "date-time", 
+      description: "Timestamp when the configInit was last updated" 
+    },
+    deleted_at: { 
+      type: "string", 
+      format: "date-time", 
+      nullable: true, 
+      description: "Timestamp when the configInit was deleted (nullable)" 
+    }
+  },
+  required: ["name", "value", "description", "unit"]
+};
+
+export const RunningConfigSchema = {
+  type: "object",
+  properties: {
+    id: { 
+      type: "integer", 
+      description: "Unique ID of the runningConfig" 
+    },
+    name: { 
+      type: "string", 
+      description: "Name of the runningConfig" 
+    },
+    value: { 
+      type: "string", 
+      description: "Value of the runningConfig" 
+    },
+    description: { 
+      type: "string", 
+      description: "Description of the runningConfig" 
+    },
+    unit: { 
+      type: "string", 
+      description: "Unit of the runningConfig" 
+    },
+    created_at: { 
+      type: "string", 
+      format: "date-time", 
+      description: "Timestamp when the runningConfig was created" 
+    },
+    updated_at: { 
+      type: "string", 
+      format: "date-time", 
+      description: "Timestamp when the runningConfig was last updated" 
+    },
+    deleted_at: { 
+      type: "string", 
+      format: "date-time", 
+      nullable: true, 
+      description: "Timestamp when the runningConfig was deleted (nullable)" 
+    }
+  },
+  required: ["name", "value", "description", "unit"]
+};

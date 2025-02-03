@@ -9,14 +9,20 @@ import productoRutas from './rutas/productos/productRoutes.js';
 import usuarioRutas from "./rutas/usuarios/usuariosRutas.js";
 import { swaggerDocs, swaggerUi } from "./config/swagger.js"; 
 import bodyParser from "body-parser";
-
+import connectDB from "./config/mongoDB.js";
 import dotenv from "dotenv"; // Load environment variables
+import configInitRoutes from "./rutas/IoT/configInitRoutes.js";
+import runningConfigRoutes from "./rutas/IoT/runningConfigRoutes.js";
+
+
 dotenv.config();
 
 const app = express();
 
 // Enable CORS for all routes
 app.use(cors());  // This enables CORS for all incoming requests
+//coneccion a mongo db
+connectDB();
 
 // Middleware to parse JSON requests
 app.use(express.json());
@@ -30,6 +36,10 @@ app.use("/api", promocionRutas);
 app.use("/api", ventaRutas);
 app.use("/api", productoRutas);
 app.use("/api", usuarioRutas);
+app.use("/api", configInitRoutes);
+app.use("/api", runningConfigRoutes);
+
+
 
 // Swagger documentation
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
@@ -39,5 +49,7 @@ const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+
 
 export { app, server };
