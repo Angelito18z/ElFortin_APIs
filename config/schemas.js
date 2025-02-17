@@ -450,88 +450,48 @@ export const UserInputSchema = {
   },
   required: ["name", "email", "user_type", "nickname", "password"] // These fields are mandatory for creation
 };
-export const ConfigInitSchema = {
+export const CircuitStatusSchema = {
   type: "object",
   properties: {
-    id: { 
-      type: "integer", 
-      description: "Unique ID of the configInit" 
-    },
-    name: { 
+    id: {
       type: "string", 
-      description: "Name of the configInit" 
+      description: "Unique ID of the circuit status"
     },
-    value: { 
+    sensor: {
       type: "string", 
-      description: "Value of the configInit" 
+      description: "Name of the sensor"
     },
-    description: { 
+    value: {
       type: "string", 
-      description: "Description of the configInit" 
+      description: "Value reported by the sensor"
     },
-    unit: { 
+    units: {
       type: "string", 
-      description: "Unit of the configInit" 
-    },
-    created_at: { 
-      type: "string", 
-      format: "date-time", 
-      description: "Timestamp when the configInit was created" 
-    },
-    updated_at: { 
-      type: "string", 
-      format: "date-time", 
-      description: "Timestamp when the configInit was last updated" 
-    },
-    deleted_at: { 
-      type: "string", 
-      format: "date-time", 
-      nullable: true, 
-      description: "Timestamp when the configInit was deleted (nullable)" 
+      description: "Units of the reported value (e.g., V, A, °C)"
     }
   },
-  required: ["name", "value", "description", "unit"]
+  required: ["sensor", "value", "units"]
 };
 
-export const RunningConfigSchema = {
+export const SensorDataSchema = {
   type: "object",
   properties: {
-    id: { 
-      type: "integer", 
-      description: "Unique ID of the runningConfig" 
-    },
-    name: { 
+    id: {
       type: "string", 
-      description: "Name of the runningConfig" 
+      description: "Unique ID of the sensor data"
     },
-    value: { 
+    sensor: {
       type: "string", 
-      description: "Value of the runningConfig" 
+      description: "Name of the sensor"
     },
-    description: { 
-      type: "string", 
-      description: "Description of the runningConfig" 
+    value: {
+      type: "number", 
+      description: "Value reported by the sensor"
     },
-    unit: { 
+    measure: {
       type: "string", 
-      description: "Unit of the runningConfig" 
-    },
-    created_at: { 
-      type: "string", 
-      format: "date-time", 
-      description: "Timestamp when the runningConfig was created" 
-    },
-    updated_at: { 
-      type: "string", 
-      format: "date-time", 
-      description: "Timestamp when the runningConfig was last updated" 
-    },
-    deleted_at: { 
-      type: "string", 
-      format: "date-time", 
-      nullable: true, 
-      description: "Timestamp when the runningConfig was deleted (nullable)" 
+      description: "Measurement type (optional, could be units or type of value)"
     }
   },
-  required: ["name", "value", "description", "unit"]
+  required: ["sensor", "value"]
 };
