@@ -11,8 +11,9 @@ import { swaggerDocs, swaggerUi } from "./config/swagger.js";
 import bodyParser from "body-parser";
 import connectDB from "./config/mongoDB.js";
 import dotenv from "dotenv"; // Load environment variables
-import circuitStatusRutas from "./rutas/IoT/circuitStatusRoutes.js";
-import sensorDataRutas from "./rutas/IoT/sensorDataRoutes.js";
+import configInitRutas from "./rutas/IoT/configInitRoutes.js"
+import dataRutas from "./rutas/IoT/dataRoutes.js"
+
 dotenv.config();
 
 const app = express();
@@ -34,10 +35,9 @@ app.use("/api", promocionRutas);
 app.use("/api", ventaRutas);
 app.use("/api", productoRutas);
 app.use("/api", usuarioRutas);
-app.use("/api", circuitStatusRutas);
-app.use("/api", sensorDataRutas);
 
-
+app.use("/api", configInitRutas);
+app.use("/api", dataRutas);
 
 // Swagger documentation
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
