@@ -15,7 +15,7 @@ import configInitRutas from "./rutas/IoT/configInitRoutes.js"
 import dataRutas from "./rutas/IoT/dataRoutes.js"
 
 dotenv.config();
-
+console.log(process.env.MONGO_URI);
 const app = express();
 
 // Enable CORS for all routes
