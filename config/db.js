@@ -29,10 +29,10 @@ const pool2 = new Pool({
 
 pool.connect()
     .then(client => {
-        console.log('✅ Conexión exitosa a la base de datos PostgreSQL');
+        console.log('Conexión exitosa a la base de datos');
         client.release(); // Liberar el cliente una vez que se conecte
     })
-    .catch(err => console.error('❌ Error en la conexión a la base de datos PostgreSQL', err.stack));
+    .catch(err => console.error('Error en la conexión a la base de datos', err.stack));
 
 // Exporta ambos pools
 export default pool;

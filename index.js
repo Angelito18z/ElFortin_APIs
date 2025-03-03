@@ -9,7 +9,7 @@ import productoRutas from './rutas/productos/productRoutes.js';
 import usuarioRutas from "./rutas/usuarios/usuariosRutas.js";
 import { swaggerDocs, swaggerUi } from "./config/swagger.js"; 
 import bodyParser from "body-parser";
-import connectDB from "./config/mongoDB.js";
+
 import dotenv from "dotenv"; // Load environment variables
 import configInitRutas from "./rutas/IoT/configInitRoutes.js"
 import dataRutas from "./rutas/IoT/dataRoutes.js"
@@ -20,8 +20,6 @@ const app = express();
 
 // Enable CORS for all routes
 app.use(cors());  // This enables CORS for all incoming requests
-//coneccion a mongo db
-connectDB();
 
 // Middleware to parse JSON requests
 app.use(express.json());
@@ -47,7 +45,5 @@ const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
-
 
 export { app, server };

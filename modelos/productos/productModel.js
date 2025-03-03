@@ -97,38 +97,23 @@ class Product {
 
   static async update(id, data, filePath) {
     const {
-        name,
-        description,
-        price,
-        category_id,
-        pre_tax_cost,
-        post_tax_cost,
+      name,
+      description,
+      price,
+      category_id,
+      pre_tax_cost,
+      post_tax_cost,
     } = data;
-
-    // Retrieve the current product data
-    const currentProduct = await this.findById(id);
-    if (!currentProduct) {
-        throw new Error("Product not found");
-    }
-
-    // Use existing image_url if no new image is uploaded
-    let imageUrl = currentProduct.image_url;
+    let imageUrl = null;
     if (filePath) {
-        imageUrl = await uploadToCloudinaryProducts(filePath);
-    }
-
+      imageUrl = await uploadToCloudinaryProducts(filePath);
+  }
     const result = await pool.query(
-        `UPDATE menu_items 
-         SET name=$1, description=$2, price=$3, category_id=$4, 
-             pre_tax_cost=$5, post_tax_cost=$6, image_url=$7, updated_at=now() 
-         WHERE id=$8 AND deleted_at IS NULL 
-         RETURNING *`,
-        [name, description, price, category_id, pre_tax_cost, post_tax_cost, imageUrl, id]
+      "UPDATE menu_items SET name=$1, description=$2, price=$3, category_id=$4, pre_tax_cost=$5, post_tax_cost=$6, image_url=$7, updated_at = now() WHERE id=$8 AND deleted_at IS NULL RETURNING *",
+      [name, description, price, category_id, pre_tax_cost, post_tax_cost, imageUrl, id]
     );
-
     return result.rows[0];
-}
-
+  }
 
   static async delete(id) {
     const result = await pool.query(

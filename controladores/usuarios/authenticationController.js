@@ -44,22 +44,42 @@ class AutenticationController {
     }
 
 
-    static async updateUser(req, res) {
-        try {
-            const { body } = req; // Extract user data from the request body
-            const { id } = req.params; // Extract user ID from the route parameters
-            const filePath = req.file?.path; // Get the uploaded file path from multer
-    
-            // Pass the user data, file path, and ID to the User model's update method
-            const updatedUser = await User.update(id, body, filePath);
-    
-            res.status(200).json({ message: "Usuario actualizado exitosamente", user: updatedUser });
-        } catch (error) {
-            console.error('Error updating user:', error);
-            res.status(500).json({ message: 'Error del servidor', error: error.message });
+    static async updateUser(id, data, filePath) {
+        const { name, email, phone, user_type, nickname, password } = data;
+        
+        let hashedPassword = null;
+        if (password) {
+            // Hash the new password if provided
+            const saltRounds = 10;
+            hashedPassword = await bcrypt.hash(password, saltRounds);
         }
+
+        // Upload new image to Cloudinary if a filePath is provided
+        let imageUrl = null;
+        if (filePath) {
+            imageUrl = await uploadToCloudinary(filePath);
+        } 
+
+        const result = await pool.query(
+            `
+            UPDATE users
+            SET 
+                name = $1,
+                email = $2,
+                phone = $3,
+                user_type = $4,
+                nickname = $5,
+                encrypted_password = COALESCE($6, encrypted_password),
+                image_url = COALESCE($7, image_url) -- Update image URL only if provided
+            WHERE id = $8
+            RETURNING *
+            `,
+            [name, email, phone, user_type, nickname, hashedPassword, imageUrl, id]
+        );
+
+        return result.rows[0];
     }
-    
+
     static async deleteUser(req, res) {
         try {
             const user = await User.delete(req.params.id);

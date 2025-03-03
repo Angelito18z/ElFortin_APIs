@@ -2,6 +2,103 @@ import express from 'express';
 import OrderController from '../../controladores/pedidos/pedidosController.js'; // Update to reference the correct controller
 
 const router = express.Router();
+/**
+ * @swagger
+ * /api/customers/{customerId}/orders:
+ *   get:
+ *     summary: Retrieve all orders for a specific customer.
+ *     description: Fetches all orders associated with a customer by their ID, including detailed information about payment methods, discounts, and order items.
+ *     tags:
+ *       - Orders
+ *     parameters:
+ *       - in: path
+ *         name: customerId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the customer.
+ *     responses:
+ *       200:
+ *         description: A list of orders for the customer.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       order_id:
+ *                         type: integer
+ *                         example: 1
+ *                       table_number:
+ *                         type: integer
+ *                         example: 5
+ *                       order_date:
+ *                         type: string
+ *                         format: date-time
+ *                         example: 2024-11-27T10:00:00Z
+ *                       total_amount:
+ *                         type: number
+ *                         format: float
+ *                         example: 45.50
+ *                       payment_method:
+ *                         type: string
+ *                         example: Credit Card
+ *                       discount_description:
+ *                         type: string
+ *                         example: Black Friday Discount
+ *                       discount_value:
+ *                         type: number
+ *                         format: float
+ *                         example: 10.00
+ *                       status:
+ *                         type: string
+ *                         example: Completed
+ *                       item_name:
+ *                         type: string
+ *                         example: Spaghetti
+ *                       quantity:
+ *                         type: integer
+ *                         example: 2
+ *                       item_cost:
+ *                         type: number
+ *                         format: float
+ *                         example: 12.99
+ *       404:
+ *         description: No orders found for this customer.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: No orders found for this customer.
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: Error fetching orders.
+ */
+
+router.get('/orders/customer/:customerId', OrderController.getOrdersByCustomerId);
 
 /**
  * @swagger
@@ -49,31 +146,6 @@ router.get('/orders', OrderController.getAllOrders); // Get all orders
  *         description: Internal server error
  */
 router.post('/orders', OrderController.createOrder); // Create a new order
-
-
-/**
- * @swagger
- * /orders/customer/{customerName}:
- *   get:
- *     summary: Retrieve orders by customer name
- *     tags: [Orders]
- *     parameters:
- *       - in: path
- *         name: customerName
- *         schema:
- *           type: string
- *         required: true
- *         description: Name of the customer whose orders to retrieve
- *     responses:
- *       200:
- *         description: Orders retrieved successfully
- *       404:
- *         description: Orders not found for the given customer
- *       500:
- *         description: Internal server error
- */
-router.get('/orders/customer/:customerName', OrderController.getOrdersByCustomerName); // Get orders by customer name
-
 
 /**
  * @swagger
@@ -205,8 +277,6 @@ router.put('/orders/:id', OrderController.updateOrder); // Update an order by ID
  *         description: Internal server error
  */
 router.delete('/orders/:id', OrderController.deleteOrder); // Delete an order by ID
-
-
 
 
 

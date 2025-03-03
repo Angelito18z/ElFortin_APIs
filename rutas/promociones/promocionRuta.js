@@ -3,6 +3,12 @@ import PromocionControlador from "../../controladores/promociones/promocionContr
 
 const router = express.Router();
 
+/**
+ * @swagger
+ * tags:
+ *   name: Promotion
+ *   description: API for managing promotions
+ */
 
 /**
  * @swagger

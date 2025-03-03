@@ -178,38 +178,33 @@ class OrderController {
         }
     }
 
-// Find orders by customer name
-static async getOrdersByCustomerName(req, res) {
-    try {
-        const { customerName } = req.params;
-        console.log("Received customer name:", customerName); // Log to check the input
-
-        // Fetch orders for the given customer name
-        const orders = await Order.getOrdersByCustomerName(customerName);
-
-        if (!orders.length) {
-            return res.status(404).json({
+    static async getOrdersByCustomerId(req, res) {
+        try {
+            const { customerId } = req.params;
+        
+            // Fetch orders for the given customer ID
+            const orders = await Order.getOrdersByCustomerId(customerId);
+        
+            if (!orders.length) {
+                return res.status(404).json({
+                    status: 'error',
+                    message: 'No orders found for this customer.',
+                });
+            }
+        
+            return res.status(200).json({
+                status: 'success',
+                data: orders,
+            });
+        } catch (error) {
+            console.error('Error fetching orders:', error);
+            return res.status(500).json({
                 status: 'error',
-                message: 'No orders found for this customer.',
+                message: 'Error fetching orders',
+                stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
             });
         }
-
-        return res.status(200).json({
-            status: 'success',
-            message: 'Orders retrieved successfully',
-            data: orders,
-        });
-    } catch (error) {
-        return res.status(500).json({
-            status: 'error',
-            message: error.message,
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
-        });
     }
-}
-
-    
-    
 
 }
 

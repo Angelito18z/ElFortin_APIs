@@ -35,57 +35,40 @@ class User {
     }
 
     static async update(id, data, filePath) {
-        try {
-            const { name, email, phone, user_type, nickname, password } = data;
+        const { name, email, phone, user_type, nickname, password } = data;
     
-            // Validar entrada (opcional)
-            if (!id) {
-                throw new Error('El ID del usuario es obligatorio');
-            }
-    
-            // Hash de la contraseña si se proporciona
-            let hashedPassword = null;
-            if (password) {
-                const saltRounds = 10;
-                hashedPassword = await bcrypt.hash(password, saltRounds);
-            }
-    
-            // Subir imagen a Cloudinary si se proporciona un archivo
-            let imageUrl = null;
-            if (filePath) {
-                imageUrl = await uploadToCloudinary(filePath);
-            }
-    
-            // Actualizar en la base de datos
-            const result = await pool.query(
-                `
-                UPDATE users
-                SET 
-                    name = $1,
-                    email = $2,
-                    phone = $3,
-                    user_type = $4,
-                    nickname = $5,
-                    encrypted_password = COALESCE($6, encrypted_password),
-                    image_url = COALESCE($7, image_url)
-                WHERE id = $8
-                RETURNING *
-                `,
-                [name, email, phone, user_type, nickname, hashedPassword, imageUrl, id]
-            );
-    
-            // Verificar si el usuario fue encontrado y actualizado
-            if (result.rowCount === 0) {
-                throw new Error('Usuario no encontrado');
-            }
-    
-            return result.rows[0];
-        } catch (error) {
-            console.error('Error actualizando usuario:', error.message);
-            throw new Error('Error al actualizar el usuario');
+        let hashedPassword = null;
+        if (password) {
+            // Hash the new password if provided
+            const saltRounds = 10;
+            hashedPassword = await bcrypt.hash(password, saltRounds);
         }
-    }
     
+        // Upload new image to Cloudinary if a filePath is provided
+        let imageUrl = null;
+        if (filePath) {
+            imageUrl = await uploadToCloudinary(filePath);
+        }
+    
+        const result = await pool.query(
+            `
+            UPDATE users
+            SET 
+                name = $1,
+                email = $2,
+                phone = $3,
+                user_type = $4,
+                nickname = $5,
+                encrypted_password = COALESCE($6, encrypted_password),
+                image_url = COALESCE($7, image_url) -- Update image URL only if provided
+            WHERE id = $8
+            RETURNING *
+            `,
+            [name, email, phone, user_type, nickname, hashedPassword, imageUrl, id]
+        );
+    
+        return result.rows[0];
+    }
 
     static async delete(id) {
         const result = await pool.query(

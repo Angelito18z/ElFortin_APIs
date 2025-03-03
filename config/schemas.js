@@ -62,7 +62,7 @@ export const ProductSchema = {
       description: "Price of the product",
     },
     category_name: {
-      type: "integer",
+      type: "string",
       description: "Category name of the product",
     },
     pre_tax_cost: {
@@ -449,49 +449,4 @@ export const UserInputSchema = {
     }
   },
   required: ["name", "email", "user_type", "nickname", "password"] // These fields are mandatory for creation
-};
-export const CircuitStatusSchema = {
-  type: "object",
-  properties: {
-    id: {
-      type: "string", 
-      description: "Unique ID of the circuit status"
-    },
-    sensor: {
-      type: "string", 
-      description: "Name of the sensor"
-    },
-    value: {
-      type: "string", 
-      description: "Value reported by the sensor"
-    },
-    units: {
-      type: "string", 
-      description: "Units of the reported value (e.g., V, A, °C)"
-    }
-  },
-  required: ["sensor", "value", "units"]
-};
-
-export const SensorDataSchema = {
-  type: "object",
-  properties: {
-    id: {
-      type: "string", 
-      description: "Unique ID of the sensor data"
-    },
-    sensor: {
-      type: "string", 
-      description: "Name of the sensor"
-    },
-    value: {
-      type: "number", 
-      description: "Value reported by the sensor"
-    },
-    measure: {
-      type: "string", 
-      description: "Measurement type (optional, could be units or type of value)"
-    }
-  },
-  required: ["sensor", "value"]
 };
