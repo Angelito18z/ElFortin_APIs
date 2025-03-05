@@ -4,7 +4,7 @@ class ConfigInitController {
     // Obtener todos los registros
     static async getAll(req, res) {
         try {
-            const respuesta = await ConfigInit.find();
+            const respuesta = await ConfigInit.findOne();
             res.send(respuesta);
         } catch (error) {
             res.status(500).send({ message: "Error al obtener los datos", error });
