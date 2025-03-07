@@ -2,22 +2,27 @@ import mongoose from "mongoose";
 
 const configInit = new mongoose.Schema(
   {
-    sensor: {
+    led1: {
       type: String
     },
-    valor :
+    led2 :
     {
         type:String
     },    
-    descripcion :
+    servo :
     {
         type:String
-    },   
+    },  
+    pir :
+    {
+        type:String
+    }, 
+    foto :
+    {
+        type:String
+    },       
   },
-  {
-    timestamps: true, //  Agrega createdAt y updatedAt automáticamente
-    versionKey: false 
-  }
+  
 );
 
 const ConfigInit = mongoose.model("ConfigInit", configInit);
