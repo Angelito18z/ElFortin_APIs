@@ -12,11 +12,7 @@ const configInit = new mongoose.Schema(
     display :
     {
         type:String
-    },  
-    pir :
-    {
-        type:String
-    }, 
+    },   
     buzzer :
     {
         type:String
