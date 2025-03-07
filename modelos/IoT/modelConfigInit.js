@@ -2,14 +2,14 @@ import mongoose from "mongoose";
 
 const configInit = new mongoose.Schema(
   {
-    led1: {
+    led: {
       type: String
     },
-    led2 :
+    pir :
     {
         type:String
     },    
-    servo :
+    display :
     {
         type:String
     },  
@@ -17,10 +17,23 @@ const configInit = new mongoose.Schema(
     {
         type:String
     }, 
-    foto :
+    buzzer :
     {
         type:String
-    },       
+    }, 
+    button :
+    {
+        type:String
+    },  
+    led1: {
+      type: String
+    },
+    led2: {
+      type: String
+    },    
+    servo: {
+      type: String
+    },   
   },
   
 );
