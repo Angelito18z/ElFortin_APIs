@@ -14,42 +14,53 @@ class DataController {
     // Crear un nuevo registro
     static async create(req, res) {
         try {
-            const { ultrasonico, potenciometro, fotoresistencia } = req.query;
-    
+            const { led, pir, buzzer, display, button } = req.body;
+
             // Validar que todos los parámetros existan
-            if (!ultrasonico || !potenciometro || !fotoresistencia) {
-                return res.status(400).send({ message: "Faltan parámetros en la URL" });
+            if (!led || !pir || !buzzer || !display || !button) {
+                return res.status(400).send({ message: "Faltan parámetros en el cuerpo de la solicitud" });
             }
-    
+
             // Crear los objetos con los datos recibidos
-            const dataUltrasonico = await Data.create({
-                sensor: "Ultrasonico",
-                unidad: "cm",
-                valor: parseFloat(ultrasonico)
+            const dataLed = await Data.create({
+                sensor: "LED",
+                unidad: "color",
+                valor: led
             });
-    
-            const dataPotenciometro = await Data.create({
-                sensor: "Potenciometro",
-                unidad: "Ω",
-                valor: parseFloat(potenciometro)
+
+            const dataPIR = await Data.create({
+                sensor: "PIR",
+                unidad: "movimiento",
+                valor: pir
             });
-    
-            const dataFotoresistencia = await Data.create({
-                sensor: "Fotoresistencia",
-                unidad: "lux",
-                valor: parseFloat(fotoresistencia)
+
+            const dataBuzzer = await Data.create({
+                sensor: "Buzzer",
+                unidad: "sonido",
+                valor: buzzer
             });
-    
+
+            const dataDisplay = await Data.create({
+                sensor: "Display",
+                unidad: "mensaje",
+                valor: display
+            });
+
+            const dataButton = await Data.create({
+                sensor: "Button",
+                unidad: "presionado",
+                valor: button
+            });
+
             res.send({
                 message: "Datos guardados correctamente",
-                data: [dataUltrasonico, dataPotenciometro, dataFotoresistencia]
+                data: [dataLed, dataPIR, dataBuzzer, dataDisplay, dataButton]
             });
-    
+
         } catch (error) {
             res.status(500).send({ message: "Error al crear el registro", error });
         }
     }
-    
 }
 
 export default DataController;
