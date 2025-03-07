@@ -14,7 +14,7 @@ class DataController {
     // Crear un nuevo registro
     static async create(req, res) {
         try {
-            const { led, pir, buzzer, display, button } = req.body;
+            const { led, pir, buzzer, display, button } = req.query;
 
             // Validar que todos los parámetros existan
             if (!led || !pir || !buzzer || !display || !button) {
