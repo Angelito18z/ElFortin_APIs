@@ -19,7 +19,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: process.env.SWAGGER_LOCAL,
+        url: `${process.env.SWAGGER_PRODUCCION}/api`,
         description: "Servidor local",
       },
       {
