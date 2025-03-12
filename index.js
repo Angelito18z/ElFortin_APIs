@@ -1,53 +1,53 @@
+// index.js
 import express from "express";
-import cors from 'cors'; // Import CORS package
+import cors from 'cors';
+import proveedorRutas from './rutas/proveedores/proveedorRuta.js';
+import orderRoutes from './rutas/pedidos/pedidosRoutes.js';
+import restauranteRutas from './rutas/restaurantes/restauranteRutas.js';
+import promocionRutas from './rutas/promociones/promocionRuta.js';
+import ventaRutas from './rutas/ventas/ventasRoutes.js';
+import productoRutas from './rutas/productos/productRoutes.js';
+import usuarioRutas from "./rutas/usuarios/usuariosRutas.js";
+import { swaggerDocs, swaggerUi } from "./config/swagger.js"; 
 import bodyParser from "body-parser";
-import dotenv from "dotenv"; // Load environment variables
-import mongoose from "mongoose";
-import { Client } from 'pg'; // PostgreSQL
+import dotenv from "dotenv";
+import connectMongoDB from "./config/MongoDB.js";
+import configInitRutas from "./rutas/IoT/configInitRoutes.js";
+import dataRutas from "./rutas/IoT/dataRoutes.js";
 
 dotenv.config();
 
 const app = express();
 
-// Enable CORS for all routes
-app.use(cors());  // This enables CORS for all incoming requests
+// Habilitar CORS para todas las rutas
+app.use(cors());
 
-// Middleware to parse JSON requests
+// Conectar a las bases de datos
+connectMongoDB();     // Conexión a MongoDB Local
+
+// Middleware para analizar las solicitudes JSON
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// 1. Conexión a PostgreSQL (Local)
-const client = new Client({
-  connectionString: process.env.DB_LOCAL_POSTGRES_CONNECTION,  // Asume que la URL está en el archivo .env
-});
-client.connect()
-  .then(() => console.log('Conexión exitosa a PostgreSQL'))
-  .catch((err) => console.error('Error al conectar con PostgreSQL', err));
+// Definir rutas
+app.use("/api", proveedorRutas);
+app.use("/api", orderRoutes);
+app.use("/api", restauranteRutas);
+app.use("/api", promocionRutas);
+app.use("/api", ventaRutas);
+app.use("/api", productoRutas);
+app.use("/api", usuarioRutas);
+app.use("/api", configInitRutas);
+app.use("/api", dataRutas);
 
-// 2. Conexión a MongoDB Local
-mongoose.connect(process.env.DB_LOCAL_MONGO_CONNECTION, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-  .then(() => console.log('Conexión exitosa a MongoDB local'))
-  .catch((err) => console.error('Error al conectar con MongoDB local', err));
+// Swagger Documentation
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-// 3. Conexión a MongoDB Atlas
-mongoose.connect(process.env.DB_ATLAS_CONNECTION, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-  .then(() => console.log('Conexión exitosa a MongoDB Atlas'))
-  .catch((err) => console.error('Error al conectar con MongoDB Atlas', err));
-
-// Definir rutas y otros middlewares
-// Aquí debes agregar tus rutas y middlewares, como en tu código original.
-
-// Inicia el servidor
+// Iniciar el servidor
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+    console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
 
 export { app, server };
