@@ -1,7 +1,6 @@
-// index.js
 import express from "express";
-import cors from 'cors';
-import proveedorRutas from './rutas/proveedores/proveedorRuta.js';
+import cors from 'cors'; // Import CORS package
+import proveedorRutas from './rutas/proveedores/proveedorRuta.js'; // Other imports...
 import orderRoutes from './rutas/pedidos/pedidosRoutes.js';
 import restauranteRutas from './rutas/restaurantes/restauranteRutas.js';
 import promocionRutas from './rutas/promociones/promocionRuta.js';
@@ -10,27 +9,23 @@ import productoRutas from './rutas/productos/productRoutes.js';
 import usuarioRutas from "./rutas/usuarios/usuariosRutas.js";
 import { swaggerDocs, swaggerUi } from "./config/swagger.js"; 
 import bodyParser from "body-parser";
-import dotenv from "dotenv";
-import connectMongoDB from "./config/MongoDB.js";
-import configInitRutas from "./rutas/IoT/configInitRoutes.js";
-import dataRutas from "./rutas/IoT/dataRoutes.js";
+
+import dotenv from "dotenv"; // Load environment variables
+import configInitRutas from "./rutas/IoT/configInitRoutes.js"
+import dataRutas from "./rutas/IoT/dataRoutes.js"
 
 dotenv.config();
 console.log(process.env.MONGO_URI);
 const app = express();
 
-// Habilitar CORS para todas las rutas
-app.use(cors());
+// Enable CORS for all routes
+app.use(cors());  // This enables CORS for all incoming requests
 
-// Conectar a las bases de datos
-connectMongoDB();     // Conexión a MongoDB Local
-
-// Middleware para analizar las solicitudes JSON
+// Middleware to parse JSON requests
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-// Definir rutas
+// Define routes
 app.use("/api", proveedorRutas);
 app.use("/api", orderRoutes);
 app.use("/api", restauranteRutas);
@@ -38,16 +33,17 @@ app.use("/api", promocionRutas);
 app.use("/api", ventaRutas);
 app.use("/api", productoRutas);
 app.use("/api", usuarioRutas);
+
 app.use("/api", configInitRutas);
 app.use("/api", dataRutas);
 
-// Swagger Documentation
+// Swagger documentation
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-// Iniciar el servidor
+// Start the server
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => {
-    console.log(`Servidor corriendo en el puerto ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
 
 export { app, server };

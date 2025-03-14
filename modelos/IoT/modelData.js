@@ -10,7 +10,7 @@ const data = new mongoose.Schema(
         type:String
     },
     valor:{
-        type: String
+        type: Number
     }
   },
   {
