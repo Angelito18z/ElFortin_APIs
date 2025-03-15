@@ -4,7 +4,7 @@ class promocionModelo {
   // 1. Get all active discounts
   static async obtenerTodo() {
     const result = await pool.query(
-      "SELECT * FROM discounts WHERE deleted_at IS NULL AND active = true"
+      "SELECT code, description, discount_type, value::double precision, start_date, end_date, active FROM discounts WHERE deleted_at IS NULL AND active = true"
     );
     return result.rows;
   }
@@ -78,8 +78,9 @@ class promocionModelo {
   // 5. Get a discount by ID
   static async obtenerPromocionId(id) {
     const result = await pool.query(
-      `SELECT * FROM discounts 
-         WHERE id = $1 AND deleted_at IS NULL`,
+      `SELECT code, description, discount_type, value::double precision, start_date, end_date, active 
+       FROM discounts 
+       WHERE id = $1 AND deleted_at IS NULL`,
       [id]
     );
     return result.rows[0];
@@ -108,12 +109,13 @@ class promocionModelo {
       `SELECT * FROM discounts 
        WHERE 
          (CAST(code AS TEXT) ILIKE $1 OR 
-          CAST(description AS TEXT) ILIKE $1 OR
-          CAST(discount_type AS TEXT) ILIKE $1 OR
-          CAST(value AS TEXT) ILIKE $1 OR
-          CAST(start_date AS TEXT) ILIKE $1 OR
-          CAST(end_date AS TEXT) ILIKE $1 
-         AND deleted_at IS NULL AND active = true`,
+         CAST(description AS TEXT) ILIKE $1 OR
+         CAST(discount_type AS TEXT) ILIKE $1 OR
+         CAST(value AS TEXT) ILIKE $1 OR
+         CAST(start_date AS TEXT) ILIKE $1 OR
+         CAST(end_date AS TEXT) ILIKE $1)
+       AND deleted_at IS NULL 
+       AND active = true`,
       [`%${filtros}%`]
     );
     return result.rows;
