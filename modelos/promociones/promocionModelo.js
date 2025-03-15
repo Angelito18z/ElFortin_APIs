@@ -4,7 +4,7 @@ class promocionModelo {
   // 1. Get all active discounts
   static async obtenerTodo() {
     const result = await pool.query(
-      "SELECT code, description, discount_type, value::double precision, start_date, end_date, active FROM discounts WHERE deleted_at IS NULL AND active = true"
+      "SELECT id,code, description, discount_type, value::double precision, start_date, end_date, active FROM discounts WHERE deleted_at IS NULL AND active = true"
     );
     return result.rows;
   }

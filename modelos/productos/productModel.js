@@ -10,11 +10,11 @@ class Product {
         mi.restaurant_id,
         mi.name,
         mi.description,
-        mi.price,
-        mi.image_url,  -- Explicitly specify mi for image_url
+        mi.price::double precision,
+        mi.image_url,
         c.name as category_name,
-        mi.pre_tax_cost,
-        mi.post_tax_cost,
+        mi.pre_tax_cost::double precision,
+        mi.post_tax_cost::double precision,
         mi.created_at,
         mi.updated_at,
         mi.deleted_at
@@ -27,6 +27,7 @@ class Product {
     `);
     return result.rows;
   }
+
   static async create(data, filePath) {
     const {
       name,
@@ -59,16 +60,26 @@ class Product {
   static async findById(id) {
     const result = await pool.query(
       `
-            SELECT 
-                mi.*, 
-                c.name as category_name 
-            FROM 
-                menu_items mi
-            JOIN 
-                categories c ON mi.category_id = c.id
-            WHERE 
-                mi.id = $1 AND mi.deleted_at IS NULL
-        `,
+        SELECT 
+          mi.id,
+          mi.restaurant_id,
+          mi.name,
+          mi.description,
+          mi.price::double precision,
+          mi.image_url,
+          c.name as category_name,
+          mi.pre_tax_cost::double precision,
+          mi.post_tax_cost::double precision,
+          mi.created_at,
+          mi.updated_at,
+          mi.deleted_at
+        FROM 
+          menu_items mi
+        JOIN 
+          categories c ON mi.category_id = c.id
+        WHERE 
+          mi.id = $1 AND mi.deleted_at IS NULL
+      `,
       [id]
     );
     return result.rows[0];
@@ -77,19 +88,30 @@ class Product {
   static async searchAllColumns(searchString) {
     const result = await pool.query(
       `
-            SELECT 
-            mi.*,
-             c.name as category_name  
-            FROM 
-              menu_items mi JOIN categories c ON mi.category_id = c.id 
-          WHERE 
-              (mi.name ILIKE $1 OR CAST(mi.price AS TEXT) 
-          ILIKE 
-              $1 OR CAST(mi.pre_tax_cost AS TEXT)     
-          ILIKE 
-              $1 OR CAST(mi.post_tax_cost AS TEXT) 
-          ILIKE 
-              $1) AND mi.deleted_at IS NULL`,
+        SELECT 
+          mi.id,
+          mi.restaurant_id,
+          mi.name,
+          mi.description,
+          mi.price::double precision,
+          mi.image_url,
+          c.name as category_name,
+          mi.pre_tax_cost::double precision,
+          mi.post_tax_cost::double precision,
+          mi.created_at,
+          mi.updated_at,
+          mi.deleted_at
+        FROM 
+          menu_items mi
+        JOIN 
+          categories c ON mi.category_id = c.id
+        WHERE 
+          (mi.name ILIKE $1 OR 
+           CAST(mi.price AS TEXT) ILIKE $1 OR 
+           CAST(mi.pre_tax_cost AS TEXT) ILIKE $1 OR 
+           CAST(mi.post_tax_cost AS TEXT) ILIKE $1) 
+          AND mi.deleted_at IS NULL
+      `,
       [`%${searchString}%`]
     );
     return result.rows;
